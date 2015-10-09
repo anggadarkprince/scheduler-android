@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:adjustViewBounds="true">
+
+    <TextView
+        android:id="@+id/leftDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:text="@string/dummy_number_medium"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/leftMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="20dp"
+        android:layout_below="@id/leftDate"
+        android:text="OCT"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/timelineTop"
+        android:adjustViewBounds="true"
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:contentDescription="@string/description_general"
+        android:background="@color/white"
+        android:layout_marginLeft="60dp"/>
+
+    <ImageView
+        android:id="@+id/timeline"
+        android:adjustViewBounds="true"
+        android:layout_width="1dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/description_general"
+        android:background="@color/white"
+        android:layout_marginLeft="60dp"/>
+
+    <ImageView
+        android:id="@+id/listScheduleIcon"
+        android:adjustViewBounds="true"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:paddingTop="10dp"
+        android:layout_marginLeft="45dp"
+        android:contentDescription="@string/description_general"
+        android:src="@drawable/ic_node" />
+
+    <TextView
+        android:id="@+id/listScheduleTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/listScheduleIcon"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:text="@string/dummy_text_sort"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/listScheduleDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listScheduleTitle"
+        android:layout_toRightOf="@id/listScheduleIcon"
+        android:lines="2"
+        android:layout_marginBottom="10dp"
+        android:text="@string/dummy_text_long"
+        android:textColor="@color/gray"
+        android:textSize="12sp" />
+
+
+    <TextView
+        android:id="@+id/listScheduleDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listScheduleDescription"
+        android:layout_toRightOf="@id/listScheduleIcon"
+        android:lines="2"
+        android:layout_marginRight="5dp"
+        android:text="SUNDAY,"
+        android:textColor="@color/gray"
+        android:textSize="10sp"/>
+
+    <TextView
+        android:id="@+id/listScheduleDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listScheduleDescription"
+        android:layout_toRightOf="@id/listScheduleDay"
+        android:lines="2"
+        android:textStyle="bold"
+        android:paddingRight="20dp"
+        android:text="20 MAY 2015"
+        android:textColor="@color/gray"
+        android:textSize="10sp"/>
+
+    <TextView
+        android:id="@+id/listScheduleId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text=""
+        android:visibility="gone" />
+
+</RelativeLayout>

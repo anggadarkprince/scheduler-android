@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/labelTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_schedule"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/labelSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/labelTitle"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/subtitle_schedule"
+            android:textColor="@color/gray" />
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/labelTitle"
+            android:background="@drawable/button"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/label_button_create_schedule"
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:minHeight="40dp"/>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listSchedule"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:listSelector="@drawable/list_selector" >
+    </ListView>
+
+
+    <LinearLayout
+        android:id="@+id/loadingScreen"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#DD000000"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/loadingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/description_general"
+            android:src="@drawable/loading0001" />
+    </LinearLayout>
+</RelativeLayout>

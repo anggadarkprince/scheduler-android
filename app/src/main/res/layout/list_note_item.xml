@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:adjustViewBounds="true">
+
+    <TextView
+        android:id="@+id/listNoteTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:text="@string/dummy_text_sort"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/listNoteDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listNoteTitle"
+        android:lines="2"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/dummy_text_long"
+        android:textColor="@color/gray"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/listNoteDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listNoteDescription"
+        android:lines="2"
+        android:layout_marginEnd="5dp"
+        android:text="@string/dummy_date_sort"
+        android:textColor="@color/gray"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/listNoteDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listNoteDescription"
+        android:layout_toEndOf="@id/listNoteDay"
+        android:lines="2"
+        android:textStyle="bold"
+        android:text="@string/dummy_date_long"
+        android:textColor="@color/gray"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listNoteDescription"
+        android:layout_alignParentEnd="true"
+        android:lines="2"
+        android:textStyle="bold"
+        android:text="@string/label_detail"
+        android:textColor="@color/gray"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/listNoteId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text=""
+        android:visibility="gone" />
+
+</RelativeLayout>

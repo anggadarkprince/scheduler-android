@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
+
+            <RelativeLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/labelTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_note_edit"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/labelSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/labelTitle"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/subtitle_note"
+                    android:textColor="@color/silver" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_below="@id/header"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_title"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_title_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="text">
+
+                    <requestFocus />
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_label"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_label_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="date">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_note"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="@string/hint_note_text"
+                    android:layout_marginBottom="20dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:lines="5"
+                    android:inputType="textMultiLine">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/buttonUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="85dp"
+                    android:paddingRight="85dp"
+                    android:background="@drawable/button"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/label_button_update"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loadingScreen"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#DD000000"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <ImageView
+                    android:id="@+id/loadingIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/description_general"
+                    android:src="@drawable/loading0001" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
+
+            <RelativeLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/labelTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_schedule_edit"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/labelSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/labelTitle"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/subtitle_schedule"
+                    android:textColor="@color/silver" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_below="@id/header"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_event"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_event_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="text">
+
+                    <requestFocus />
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoEvent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_date"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_date_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="date">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_time"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_time_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="time">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_location"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/hint_location_text"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:inputType="text">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:text="@string/label_field_description"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="@string/hint_description_text"
+                    android:layout_marginBottom="20dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textSize="16sp"
+                    android:lines="3"
+                    android:inputType="textMultiLine">
+                </EditText>
+
+                <TextView
+                    android:id="@+id/infoDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dummy_text_medium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red_light"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/buttonSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="85dp"
+                    android:paddingRight="85dp"
+                    android:background="@drawable/button"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/label_button_update"
+                    android:textColor="@color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:layout_marginTop="15dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loadingScreen"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#DD000000"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <ImageView
+                    android:id="@+id/loadingIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/description_general"
+                    android:src="@drawable/loading0001" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -3,6 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:colorControlNormal">@color/white</item>
+        <item name="android:colorControlActivated">@color/blue_light</item>
+        <item name="android:colorControlHighlight">@color/blue_light</item>
     </style>
 
 </resources>

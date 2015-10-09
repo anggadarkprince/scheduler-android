@@ -14,7 +14,7 @@ public class Constant {
     public static final String STATUS_RESTRICT 		    = "restrict";
     public static final String STATUS_EXECUTED 		    = "executed";
 
-    public static final String SERVER 				    = "http://10.0.3.2/";
+    public static final String SERVER 				    = "http://10.0.3.2/scheduler/";
     public static final String URL_LOGIN 			    = SERVER+"user/login";
     public static final String URL_LOGOUT 			    = SERVER+"user/logout";
     public static final String URL_REGISTER 		    = SERVER+"user/register";
