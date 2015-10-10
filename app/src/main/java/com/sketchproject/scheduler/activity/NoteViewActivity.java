@@ -48,20 +48,17 @@ public class NoteViewActivity extends Activity {
 
     public static final String TAG = NoteViewActivity.class.getSimpleName();
     private final String KEY_ID = "id";
-    private final String KEY_EVENT = "event";
-    private final String KEY_DATE = "date";
-    private final String KEY_TIME = "time";
-    private final String KEY_LOCATION = "location";
-    private final String KEY_DESCRIPTION = "description";
+    private final String KEY_TOKEN = "token";
+    private final String KEY_TITLE = "title";
+    private final String KEY_LABEL = "label";
+    private final String KEY_NOTE = "note";
 
     private Button buttonBack;
     private Button buttonEdit;
     private Button buttonDelete;
-    private TextView labelEvent;
-    private TextView labelDate;
-    private TextView labelTime;
-    private TextView labelLocation;
-    private TextView labelDescription;
+    private TextView labelTitle;
+    private TextView labelLabel;
+    private TextView labelNote;
 
     private LinearLayout loadingScreen;
     private ImageView loadingIcon;
@@ -71,14 +68,14 @@ public class NoteViewActivity extends Activity {
     private AlertDialogManager alert;
     private ConnectionDetector connectionDetector;
 
-    private String scheduleId;
-    protected JSONObject scheduleData;
+    private String noteId;
+    protected JSONObject noteData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_schedule_view);
+        setContentView(R.layout.activity_note_view);
 
         alert = new AlertDialogManager();
 
@@ -89,11 +86,9 @@ public class NoteViewActivity extends Activity {
         buttonBack = (Button) findViewById(R.id.buttonBack);
         buttonEdit = (Button) findViewById(R.id.buttonEdit);
         buttonDelete = (Button) findViewById(R.id.buttonDelete);
-        labelEvent = (TextView) findViewById(R.id.event);
-        labelDate = (TextView) findViewById(R.id.date);
-        labelTime = (TextView) findViewById(R.id.time);
-        labelLocation = (TextView) findViewById(R.id.location);
-        labelDescription = (TextView) findViewById(R.id.description);
+        labelTitle = (TextView) findViewById(R.id.title);
+        labelLabel = (TextView) findViewById(R.id.label);
+        labelNote = (TextView) findViewById(R.id.note);
 
         loadingScreen = (LinearLayout) findViewById(R.id.loadingScreen);
         loadingIcon = (ImageView) findViewById(R.id.loadingIcon);
@@ -111,14 +106,14 @@ public class NoteViewActivity extends Activity {
         buttonDelete.setOnClickListener(new DeleteHandler());
 
         Intent i = getIntent();
-        scheduleId = i.getStringExtra(KEY_ID);
+        noteId = i.getStringExtra(KEY_ID);
 
-        updateScheduleDetail();
+        updateNoteDetail();
     }
 
-    private void updateScheduleDetail(){
+    private void updateNoteDetail(){
         if (connectionDetector.isNetworkAvailable()) {
-            new GetScheduleViewTask().execute();
+            new GetNoteViewTask().execute();
         }
         else {
             Toast.makeText(NoteViewActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
@@ -126,12 +121,17 @@ public class NoteViewActivity extends Activity {
         }
     }
 
-    private class GetScheduleViewTask extends AsyncTask<Object, Void, JSONObject> {
+    private class GetNoteViewTask extends AsyncTask<Object, Void, JSONObject> {
+        private ProgressDialog progress;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingScreen.setVisibility(View.VISIBLE);
-            loadingAnimation.start();
+            progress = new ProgressDialog(NoteViewActivity.this);
+            progress.setMessage("Retrieving note data ...");
+            progress.setIndeterminate(false);
+            progress.setCancelable(false);
+            progress.show();
         }
 
         @Override
@@ -139,8 +139,8 @@ public class NoteViewActivity extends Activity {
             JSONObject jsonResponse = null;
 
             try{
-                URL scheduleUrl = new URL(Constant.URL_SCHEDULE_EDIT);
-                HttpURLConnection connection = (HttpURLConnection) scheduleUrl.openConnection();
+                URL noteUrl = new URL(Constant.URL_NOTE_EDIT);
+                HttpURLConnection connection = (HttpURLConnection) noteUrl.openConnection();
 
                 connection.setReadTimeout(10000);
                 connection.setConnectTimeout(15000);
@@ -149,8 +149,8 @@ public class NoteViewActivity extends Activity {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("id", scheduleId);
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_ID, noteId);
 
                 String query = builder.build().getEncodedQuery();
 
@@ -196,26 +196,23 @@ public class NoteViewActivity extends Activity {
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            scheduleData = result;
-            loadingScreen.setVisibility(View.GONE);
-            loadingAnimation.stop();
-            populateScheduleResponse();
+            noteData = result;
+            progress.dismiss();
+            populateNoteResponse();
         }
     }
 
-    public void populateScheduleResponse(){
-        if(scheduleData == null){
+    public void populateNoteResponse(){
+        if(noteData == null){
             alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("success")){
-                    JSONObject setting = new JSONObject(scheduleData.getString("schedule"));
-                    labelEvent.setText(setting.getString("event"));
-                    labelDate.setText(setting.getString("date"));
-                    labelTime.setText(setting.getString("time"));
-                    labelLocation.setText(setting.getString("location"));
-                    labelDescription.setText(setting.getString("description"));
+                if(noteData.getString("status").equals("success")){
+                    JSONObject setting = new JSONObject(noteData.getString("note"));
+                    labelTitle.setText(setting.getString(KEY_TITLE));
+                    labelLabel.setText(setting.getString(KEY_LABEL));
+                    labelNote.setText(setting.getString(KEY_NOTE));
                 }
                 else{
                     alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
@@ -237,13 +234,11 @@ public class NoteViewActivity extends Activity {
     private class EditHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(NoteViewActivity.this, ScheduleEditActivity.class);
-            intent.putExtra(KEY_ID, scheduleId);
-            intent.putExtra(KEY_EVENT, labelEvent.getText());
-            intent.putExtra(KEY_DATE, labelDate.getText());
-            intent.putExtra(KEY_TIME, labelTime.getText());
-            intent.putExtra(KEY_LOCATION, labelLocation.getText());
-            intent.putExtra(KEY_DESCRIPTION, labelDescription.getText());
+            Intent intent = new Intent(NoteViewActivity.this, NoteEditActivity.class);
+            intent.putExtra(KEY_ID, noteId);
+            intent.putExtra(KEY_TITLE, labelTitle.getText());
+            intent.putExtra(KEY_LABEL, labelLabel.getText());
+            intent.putExtra(KEY_NOTE, labelNote.getText());
             startActivityForResult(intent, 100);
         }
     }
@@ -253,7 +248,7 @@ public class NoteViewActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 100){
             if(resultCode == Activity.RESULT_CANCELED){
-                updateScheduleDetail();
+                updateNoteDetail();
             }
         }
     }
@@ -263,13 +258,12 @@ public class NoteViewActivity extends Activity {
         public void onClick(View v) {
             (new AlertDialog.Builder(NoteViewActivity.this))
                     .setTitle("CONFIRM DELETE")
-                    .setMessage("Do you want to delete this schedule?")
+                    .setMessage("Do you want to delete this note?")
                     .setCancelable(false)
-                    .setIcon(R.drawable.ic_cross)
                     .setPositiveButton("YES",new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            new TaskDeleteScheduleData().execute();
+                            new TaskDeleteNoteData().execute();
                         }
                     })
                     .setNegativeButton("NO",new DialogInterface.OnClickListener() {
@@ -281,14 +275,14 @@ public class NoteViewActivity extends Activity {
         }
     }
 
-    private class TaskDeleteScheduleData extends AsyncTask<Object, Void, JSONObject> {
+    private class TaskDeleteNoteData extends AsyncTask<Object, Void, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(NoteViewActivity.this);
-            progress.setMessage("Deleting schedule data ...");
+            progress.setMessage("Deleting note data ...");
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -299,8 +293,8 @@ public class NoteViewActivity extends Activity {
             JSONObject jsonResponse = null;
 
             try{
-                URL scheduleUrl = new URL(Constant.URL_SCHEDULE_DELETE);
-                HttpURLConnection connection = (HttpURLConnection) scheduleUrl.openConnection();
+                URL noteUrl = new URL(Constant.URL_NOTE_DELETE);
+                HttpURLConnection connection = (HttpURLConnection) noteUrl.openConnection();
 
                 connection.setReadTimeout(10000);
                 connection.setConnectTimeout(15000);
@@ -309,8 +303,8 @@ public class NoteViewActivity extends Activity {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("id", scheduleId);
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_ID, noteId);
 
                 String query = builder.build().getEncodedQuery();
 
@@ -357,28 +351,28 @@ public class NoteViewActivity extends Activity {
         @Override
         protected void onPostExecute(JSONObject result) {
             progress.dismiss();
-            handleDeleteScheduleResponse();
+            handleDeleteNoteResponse();
         }
     }
 
-    public void handleDeleteScheduleResponse(){
-        if(scheduleData == null){
+    public void handleDeleteNoteResponse(){
+        if(noteData == null){
             alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("restrict")){
+                if(noteData.getString("status").equals("restrict")){
                     alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
                     finish();
                 }
-                else if(scheduleData.getString("status").equals("success")){
-                    //alert.showAlertDialog(ScheduleViewActivity.this, "Deleted", "Schedule successfully deleted", false);
+                else if(noteData.getString("status").equals("success")){
+                    //alert.showAlertDialog(NoteViewActivity.this, "Deleted", "Note successfully deleted", false);
                     Intent returnIntent = new Intent();
                     setResult(RESULT_CANCELED, returnIntent);
                     finish();
                 }
-                else if(scheduleData.getString("status").equals("failed")){
-                    alert.showAlertDialog(NoteViewActivity.this, "Failed", "Delete schedule failed", false);
+                else if(noteData.getString("status").equals("failed")){
+                    alert.showAlertDialog(NoteViewActivity.this, "Failed", "Delete note failed", false);
                 }
             }
             catch(JSONException e){

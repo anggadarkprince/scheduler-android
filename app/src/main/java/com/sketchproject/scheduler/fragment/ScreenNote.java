@@ -6,11 +6,11 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,17 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sketchproject.scheduler.R;
-import com.sketchproject.scheduler.activity.ScheduleCreateActivity;
-import com.sketchproject.scheduler.activity.ScheduleViewActivity;
+import com.sketchproject.scheduler.activity.NoteCreateActivity;
+import com.sketchproject.scheduler.activity.NoteViewActivity;
 import com.sketchproject.scheduler.adapter.NoteListAdapter;
-import com.sketchproject.scheduler.adapter.ScheduleListAdapter;
 import com.sketchproject.scheduler.library.ConnectionDetector;
 import com.sketchproject.scheduler.library.SessionManager;
 import com.sketchproject.scheduler.model.NoteItem;
-import com.sketchproject.scheduler.model.ScheduleItem;
 import com.sketchproject.scheduler.util.AlertDialogManager;
 import com.sketchproject.scheduler.util.Constant;
-import com.sketchproject.scheduler.util.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,17 +119,17 @@ public class ScreenNote extends Fragment {
     private class ListNoteListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String scheduleId = ((TextView) view.findViewById(R.id.listScheduleId)).getText().toString();
-            Intent intent = new Intent(getActivity(), ScheduleViewActivity.class);
-            intent.putExtra(KEY_ID, scheduleId);
+            String noteId = ((TextView) view.findViewById(R.id.listNoteId)).getText().toString();
+            Intent intent = new Intent(getActivity(), NoteViewActivity.class);
+            intent.putExtra(KEY_ID, noteId);
             startActivityForResult(intent, 200);
         }
     }
 
     private class CreateNoteListener implements View.OnClickListener {
         public void onClick(View v) {
-            Intent newSchedule = new Intent(getActivity(), ScheduleCreateActivity.class);
-            startActivityForResult(newSchedule, 200);
+            Intent newNote = new Intent(getActivity(), NoteCreateActivity.class);
+            startActivityForResult(newNote, 200);
         }
     }
 

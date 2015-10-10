@@ -3,7 +3,6 @@ package com.sketchproject.scheduler.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
@@ -14,9 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,6 +48,7 @@ public class ScheduleViewActivity extends Activity {
 
     public static final String TAG = ScheduleViewActivity.class.getSimpleName();
     private final String KEY_ID = "id";
+    private final String KEY_TOKEN = "token";
     private final String KEY_EVENT = "event";
     private final String KEY_DATE = "date";
     private final String KEY_TIME = "time";
@@ -130,11 +128,16 @@ public class ScheduleViewActivity extends Activity {
     }
 
     private class GetScheduleViewTask extends AsyncTask<Object, Void, JSONObject> {
+        private ProgressDialog progress;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingScreen.setVisibility(View.VISIBLE);
-            loadingAnimation.start();
+            progress = new ProgressDialog(ScheduleViewActivity.this);
+            progress.setMessage("Retrieving schedule data ...");
+            progress.setIndeterminate(false);
+            progress.setCancelable(false);
+            progress.show();
         }
 
         @Override
@@ -152,8 +155,8 @@ public class ScheduleViewActivity extends Activity {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("id", scheduleId);
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_ID, scheduleId);
 
                 String query = builder.build().getEncodedQuery();
 
@@ -200,8 +203,7 @@ public class ScheduleViewActivity extends Activity {
         @Override
         protected void onPostExecute(JSONObject result) {
             scheduleData = result;
-            loadingScreen.setVisibility(View.GONE);
-            loadingAnimation.stop();
+            progress.dismiss();
             populateScheduleResponse();
         }
     }
@@ -214,11 +216,11 @@ public class ScheduleViewActivity extends Activity {
             try {
                 if(scheduleData.getString("status").equals("success")){
                     JSONObject setting = new JSONObject(scheduleData.getString("schedule"));
-                    labelEvent.setText(setting.getString("event"));
-                    labelDate.setText(setting.getString("date"));
-                    labelTime.setText(setting.getString("time"));
-                    labelLocation.setText(setting.getString("location"));
-                    labelDescription.setText(setting.getString("description"));
+                    labelEvent.setText(setting.getString(KEY_EVENT));
+                    labelDate.setText(setting.getString(KEY_DATE));
+                    labelTime.setText(setting.getString(KEY_TIME));
+                    labelLocation.setText(setting.getString(KEY_LOCATION));
+                    labelDescription.setText(setting.getString(KEY_DESCRIPTION));
                 }
                 else{
                     alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
@@ -268,14 +270,13 @@ public class ScheduleViewActivity extends Activity {
                     .setTitle("CONFIRM DELETE")
                     .setMessage("Do you want to delete this schedule?")
                     .setCancelable(false)
-                    .setIcon(R.drawable.ic_cross)
-                    .setPositiveButton("YES",new DialogInterface.OnClickListener() {
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                             new TaskDeleteScheduleData().execute();
                         }
                     })
-                    .setNegativeButton("NO",new DialogInterface.OnClickListener() {
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }

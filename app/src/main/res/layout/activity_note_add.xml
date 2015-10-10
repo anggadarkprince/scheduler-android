@@ -70,6 +70,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="200"
                     android:inputType="text">
 
                     <requestFocus />
@@ -106,7 +107,8 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
-                    android:inputType="date">
+                    android:maxLength="50"
+                    android:inputType="text">
                 </EditText>
 
                 <TextView
