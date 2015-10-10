@@ -18,6 +18,8 @@ public class Constant {
     public static final String URL_LOGIN 			    = SERVER+"user/login";
     public static final String URL_LOGOUT 			    = SERVER+"user/logout";
     public static final String URL_REGISTER 		    = SERVER+"user/register";
+    public static final String URL_ACCOUNT 			    = SERVER+"user/edit";
+    public static final String URL_ACCOUNT_UPDATE	    = SERVER+"user/update";
 
     public static final String URL_NOTE_VIEW 		    = SERVER+"note";
     public static final String URL_NOTE_INSERT 		    = SERVER+"note/insert";

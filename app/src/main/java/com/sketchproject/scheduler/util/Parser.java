@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,55 +48,99 @@ public class Parser {
         return formattedDate;
     }
 
+    public static String getDateOfMonth(String date){
+        DateFormat simpleFormat =  new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+        Date dateType;
+        try {
+            dateType = simpleFormat.parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateType);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            if(day < 10){
+                return "0"+String.valueOf(day);
+            }
+            return String.valueOf(day);
+        } catch (ParseException e) {
+            Log.e("DATE", e.getMessage());
+            return null;
+        }
+    }
+
+    public static int getMonthOfYear(String date){
+        DateFormat simpleFormat =  new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date dateType;
+        try {
+            dateType = simpleFormat.parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateType);
+            return calendar.get(Calendar.MONTH);
+        } catch (ParseException e) {
+            Log.e("DATE", e.getMessage());
+            return 0;
+        }
+    }
+
     public static String getShortMonth(int month){
         switch (month){
-            case 1:
+            case 0:
                 return "JAN";
-            case 2:
+            case 1:
                 return "FEB";
-            case 3:
+            case 2:
                 return "MAR";
-            case 4:
+            case 3:
                 return "APR";
-            case 5:
+            case 4:
                 return "MAY";
-            case 6:
+            case 5:
                 return "JUN";
-            case 7:
+            case 6:
                 return "JUL";
-            case 8:
+            case 7:
                 return "AUG";
-            case 9:
+            case 8:
                 return "SEP";
-            case 10:
+            case 9:
                 return "OCT";
-            case 11:
+            case 10:
                 return "NOV";
-            case 12:
+            case 11:
                 return "DEC";
             default:
                 return "JAN";
         }
     }
 
-    public static String getFullDay(int day){
-        switch (day) {
-            case 1:
-                return "SUNDAY";
-            case 2:
-                return "MONDAY";
-            case 3:
-                return "TUESDAY";
-            case 4:
-                return "WEDNESDAY";
-            case 5:
-                return "THURSDAY";
-            case 6:
-                return "FRIDAY";
-            case 7:
-                return "SATURDAY";
-            default:
-                return "SUNDAY";
+    public static String getFullDay(String date){
+        DateFormat simpleFormat =  new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+        Date dateType;
+        try {
+            dateType = simpleFormat.parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateType);
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+            switch (day) {
+                case 1:
+                    return "SUNDAY";
+                case 2:
+                    return "MONDAY";
+                case 3:
+                    return "TUESDAY";
+                case 4:
+                    return "WEDNESDAY";
+                case 5:
+                    return "THURSDAY";
+                case 6:
+                    return "FRIDAY";
+                case 7:
+                    return "SATURDAY";
+                default:
+                    return "SUNDAY";
+            }
+        } catch (ParseException e) {
+            Log.e("DATE", e.getMessage());
+            return null;
         }
     }
 

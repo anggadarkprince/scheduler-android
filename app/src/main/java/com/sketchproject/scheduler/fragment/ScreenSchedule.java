@@ -44,6 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Angga on 10/7/2015.
@@ -99,7 +100,9 @@ public class ScreenSchedule extends Fragment {
 
         scheduleList = (ListView) getActivity().findViewById(R.id.listSchedule);
 
-        scheduleItem = new ArrayList<ScheduleItem>();
+        scheduleList.setDivider(null);
+
+        scheduleItem = new ArrayList<>();
 
         scheduleAdapter = new ScheduleListAdapter(getActivity(), scheduleItem);
 
@@ -229,10 +232,10 @@ public class ScreenSchedule extends Fragment {
                         int id = schedule.getInt(KEY_ID);
                         String event = schedule.getString(KEY_EVENT);
                         String description = schedule.getString(KEY_DESCRIPTION);
-                        String date = Parser.formatDate(schedule.getString(KEY_DATE), "dd MMMM yyyy");
-                        String day = Parser.formatDate(schedule.getString(KEY_DATE), "EEE, MMM d, yy");
-                        String leftMonth = Parser.getShortMonth(Integer.parseInt(Parser.formatDate(schedule.getString(KEY_DATE), "M")));
-                        String leftDate = Parser.formatDate(schedule.getString(KEY_DATE), "dd");
+                        String date = Parser.formatDate(schedule.getString(KEY_DATE), "dd MM yyyy");
+                        String day = Parser.getFullDay(schedule.getString(KEY_DATE)) + ",";
+                        String leftMonth = Parser.getShortMonth(Parser.getMonthOfYear(schedule.getString(KEY_DATE)));
+                        String leftDate = Parser.getDateOfMonth(schedule.getString(KEY_DATE));
 
                         scheduleItem.add(new ScheduleItem(id, event, description, date, day, leftMonth, leftDate));
                     }

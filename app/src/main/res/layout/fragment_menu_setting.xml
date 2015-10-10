@@ -27,7 +27,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:layout_marginTop="5dp"
                     android:text="@string/title_setting"
                     android:textColor="@color/white"
                     android:textSize="30sp"
@@ -59,7 +58,7 @@
                     android:textStyle="bold"/>
 
                 <EditText
-                    android:id="@+id/event"
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -243,7 +242,7 @@
                     android:visibility="gone" />
 
                 <Button
-                    android:id="@+id/updateSetting"
+                    android:id="@+id/buttonSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -261,19 +260,19 @@
             <LinearLayout
                 android:id="@+id/loadingScreen"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:background="#DD000000"
-                android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone" >
+                android:visibility="visible" >
 
                 <ImageView
                     android:id="@+id/loadingIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/description_general"
-                    android:src="@drawable/loading0001" />
+                    android:src="@drawable/loading0001"
+                    android:layout_marginBottom="30dp"/>
             </LinearLayout>
 
         </RelativeLayout>

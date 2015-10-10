@@ -97,9 +97,13 @@
     <string name="subtitle_note">Snapshot your activities and write all of stuff. Just single touch and re-organize all of them.</string>
     <string name="title_note_edit">EDIT NOTE</string>
     <string name="title_note_detail">NOTE DETAIL</string>
-    <string name="subtitle_schedule">Manage all task, event and it's going to becoming reminder just single touch and re-organize all of them.</string>
+    <string name="subtitle_schedule">Manage all task, event and it is going to becoming reminder just single touch and re-organize all of them.</string>
     <string name="title_schedule_edit">EDIT SCHEDULE</string>
     <string name="label_detail">DETAIL</string>
+    <string name="login_saved_title">Save Success</string>
+    <string name="login_saved_message">Your data has been successfully saved</string>
+    <string name="restrict_title">Restricted</string>
+    <string name="restrict_message">You don\'t have an authorization, Please Login</string>
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">

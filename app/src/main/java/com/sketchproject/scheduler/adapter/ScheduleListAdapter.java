@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sketchproject.scheduler.R;
@@ -58,6 +59,15 @@ public class ScheduleListAdapter extends BaseAdapter {
         TextView txtDate = (TextView) convertView.findViewById(R.id.listScheduleDate);
         TextView txtLeftDate = (TextView) convertView.findViewById(R.id.leftDate);
         TextView txtLeftMonth = (TextView) convertView.findViewById(R.id.leftMonth);
+        ImageView timelineTop = (ImageView) convertView.findViewById(R.id.timelineTop);
+        ImageView timelineBottom = (ImageView) convertView.findViewById(R.id.timeline);
+
+        if(position == getCount() - 1){
+            timelineBottom.setVisibility(View.INVISIBLE);
+        }
+        else if(position == 0){
+            timelineTop.setVisibility(View.INVISIBLE);
+        }
 
         Log.i("list", scheduleItem.get(position).getDescription());
 

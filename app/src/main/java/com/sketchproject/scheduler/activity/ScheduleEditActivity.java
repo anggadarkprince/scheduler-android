@@ -25,7 +25,7 @@ public class ScheduleEditActivity extends Activity {
 
         setContentView(R.layout.activity_schedule_edit);
 
-        buttonUpdate = (Button) findViewById(R.id.updateSchedule);
+        buttonUpdate = (Button) findViewById(R.id.buttonUpdate);
         textEvent = (EditText) findViewById(R.id.event);
         textDate = (EditText) findViewById(R.id.date);
         textTime = (EditText) findViewById(R.id.time);
