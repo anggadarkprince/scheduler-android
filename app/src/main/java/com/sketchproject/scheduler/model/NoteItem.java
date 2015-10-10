@@ -8,8 +8,6 @@ public class NoteItem {
     private String title;
     private String label;
     private String note;
-    private String date;
-    private String day;
 
     public NoteItem() {}
 
@@ -50,22 +48,6 @@ public class NoteItem {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
     }
 
 }

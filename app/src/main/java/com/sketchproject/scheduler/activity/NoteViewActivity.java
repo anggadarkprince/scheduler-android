@@ -3,7 +3,6 @@ package com.sketchproject.scheduler.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
@@ -14,9 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,9 +44,9 @@ import java.net.URL;
 /**
  * Created by Angga on 10/8/2015.
  */
-public class ScheduleViewActivity extends Activity {
+public class NoteViewActivity extends Activity {
 
-    public static final String TAG = ScheduleViewActivity.class.getSimpleName();
+    public static final String TAG = NoteViewActivity.class.getSimpleName();
     private final String KEY_ID = "id";
     private final String KEY_EVENT = "event";
     private final String KEY_DATE = "date";
@@ -124,7 +121,7 @@ public class ScheduleViewActivity extends Activity {
             new GetScheduleViewTask().execute();
         }
         else {
-            Toast.makeText(ScheduleViewActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+            Toast.makeText(NoteViewActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -208,7 +205,7 @@ public class ScheduleViewActivity extends Activity {
 
     public void populateScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
         }
         else{
             try {
@@ -221,7 +218,7 @@ public class ScheduleViewActivity extends Activity {
                     labelDescription.setText(setting.getString("description"));
                 }
                 else{
-                    alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
+                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
                 }
             }
             catch(JSONException e){
@@ -240,7 +237,7 @@ public class ScheduleViewActivity extends Activity {
     private class EditHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(ScheduleViewActivity.this, ScheduleEditActivity.class);
+            Intent intent = new Intent(NoteViewActivity.this, ScheduleEditActivity.class);
             intent.putExtra(KEY_ID, scheduleId);
             intent.putExtra(KEY_EVENT, labelEvent.getText());
             intent.putExtra(KEY_DATE, labelDate.getText());
@@ -264,7 +261,7 @@ public class ScheduleViewActivity extends Activity {
     private class DeleteHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            (new AlertDialog.Builder(ScheduleViewActivity.this))
+            (new AlertDialog.Builder(NoteViewActivity.this))
                     .setTitle("CONFIRM DELETE")
                     .setMessage("Do you want to delete this schedule?")
                     .setCancelable(false)
@@ -290,7 +287,7 @@ public class ScheduleViewActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progress = new ProgressDialog(ScheduleViewActivity.this);
+            progress = new ProgressDialog(NoteViewActivity.this);
             progress.setMessage("Deleting schedule data ...");
             progress.setIndeterminate(false);
             progress.setCancelable(false);
@@ -366,12 +363,12 @@ public class ScheduleViewActivity extends Activity {
 
     public void handleDeleteScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
         }
         else{
             try {
                 if(scheduleData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
+                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
                     finish();
                 }
                 else if(scheduleData.getString("status").equals("success")){
@@ -381,7 +378,7 @@ public class ScheduleViewActivity extends Activity {
                     finish();
                 }
                 else if(scheduleData.getString("status").equals("failed")){
-                    alert.showAlertDialog(ScheduleViewActivity.this, "Failed", "Delete schedule failed", false);
+                    alert.showAlertDialog(NoteViewActivity.this, "Failed", "Delete schedule failed", false);
                 }
             }
             catch(JSONException e){

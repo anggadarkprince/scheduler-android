@@ -2,7 +2,8 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,8 +12,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background">
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:id="@+id/header"
@@ -129,12 +129,10 @@
                         android:id="@+id/buttonBack"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="30dp"
                         android:background="@drawable/button"
                         android:text="@string/label_button_back"
                         android:textColor="@color/white"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
                         android:textStyle="bold"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -144,9 +142,7 @@
                         android:id="@+id/buttonEdit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="30dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
                         android:background="@drawable/button_edit"
                         android:text="@string/label_button_edit"
                         android:textColor="@color/white"
@@ -159,8 +155,6 @@
                         android:id="@+id/buttonDelete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="30dp"
                         android:textStyle="bold"
                         android:background="@drawable/button_delete"
                         android:text="@string/label_button_delete"

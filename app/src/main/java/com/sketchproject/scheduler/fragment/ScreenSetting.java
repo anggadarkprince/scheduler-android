@@ -94,7 +94,7 @@ public class ScreenSetting extends Fragment {
 
         alert = new AlertDialogManager();
 
-        connectionDetector = new ConnectionDetector(getActivity().getApplicationContext());
+        connectionDetector = new ConnectionDetector(getContext());
 
         session = new SessionManager(getActivity().getApplicationContext());
 
@@ -131,7 +131,7 @@ public class ScreenSetting extends Fragment {
             scheduleTask.execute();
         }
         else {
-            Toast.makeText(getActivity().getApplicationContext(), "Network is unavailable!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Network is unavailable!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -253,7 +253,7 @@ public class ScreenSetting extends Fragment {
             checkName = false;
         }
         else if(name.length() > 100){
-            infoName.setText("Field Name has max length 100 characters");
+            infoName.setText("Field Name allow max length 100 characters");
             infoName.setVisibility(View.VISIBLE);
             checkName = false;
         }
@@ -265,7 +265,7 @@ public class ScreenSetting extends Fragment {
             checkWork = false;
         }
         else if(name.length() > 100){
-            infoWork.setText("Field Work has max length 100 characters");
+            infoWork.setText("Field Work allow max length 100 characters");
             infoWork.setVisibility(View.VISIBLE);
             checkWork = false;
         }
@@ -277,7 +277,7 @@ public class ScreenSetting extends Fragment {
             checkAbout = false;
         }
         else if(about.length() > 300){
-            infoAbout.setText("Field About has max length 300 characters");
+            infoAbout.setText("Field About allow max length 300 characters");
             infoAbout.setVisibility(View.VISIBLE);
             checkAbout = false;
         }

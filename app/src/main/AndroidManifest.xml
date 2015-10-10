@@ -45,6 +45,42 @@
             android:label="@string/app_name" >
         </activity>
 
+        <!-- Schedule view activity -->
+        <activity
+            android:name=".activity.ScheduleViewActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Schedule create activity -->
+        <activity
+            android:name=".activity.ScheduleCreateActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Schedule edit activity -->
+        <activity
+            android:name=".activity.ScheduleEditActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Note view activity -->
+        <activity
+            android:name=".activity.NoteViewActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Note create activity -->
+        <activity
+            android:name=".activity.NoteCreateActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Note edit activity -->
+        <activity
+            android:name=".activity.NoteEditActivity"
+            android:label="@string/app_name" >
+        </activity>
+
     </application>
 
 </manifest>

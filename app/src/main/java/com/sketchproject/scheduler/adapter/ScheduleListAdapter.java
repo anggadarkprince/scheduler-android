@@ -57,6 +57,7 @@ public class ScheduleListAdapter extends BaseAdapter {
         TextView txtDescription = (TextView) convertView.findViewById(R.id.listScheduleDescription);
         TextView txtDay = (TextView) convertView.findViewById(R.id.listScheduleDay);
         TextView txtDate = (TextView) convertView.findViewById(R.id.listScheduleDate);
+        TextView txtTime = (TextView) convertView.findViewById(R.id.listScheduleTime);
         TextView txtLeftDate = (TextView) convertView.findViewById(R.id.leftDate);
         TextView txtLeftMonth = (TextView) convertView.findViewById(R.id.leftMonth);
         ImageView timelineTop = (ImageView) convertView.findViewById(R.id.timelineTop);
@@ -83,6 +84,7 @@ public class ScheduleListAdapter extends BaseAdapter {
 
         txtDate.setText(scheduleItem.get(position).getDate());
         txtDay.setText(scheduleItem.get(position).getDay());
+        txtTime.setText(scheduleItem.get(position).getTime().substring(0, 4));
         txtLeftDate.setText(scheduleItem.get(position).getLeftDate());
         txtLeftMonth.setText(scheduleItem.get(position).getLeftMonth());
 

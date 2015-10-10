@@ -9,17 +9,19 @@ public class ScheduleItem {
     private String description;
     private String date;
     private String day;
+    private String time;
     private String leftDate;
     private String leftMonth;
 
     public ScheduleItem() {}
 
-    public ScheduleItem(int id, String event, String description, String date, String day, String leftMonth, String leftDate){
+    public ScheduleItem(int id, String event, String description, String date, String day, String time, String leftMonth, String leftDate){
         this.id = id;
         this.event = event;
         this.description = description;
         this.date = date;
         this.day = day;
+        this.time = time;
         this.leftDate = leftDate;
         this.leftMonth = leftMonth;
     }
@@ -62,6 +64,14 @@ public class ScheduleItem {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getLeftDate() {

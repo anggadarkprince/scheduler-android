@@ -2,6 +2,7 @@ package com.sketchproject.scheduler.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,23 +50,19 @@ public class NoteListAdapter extends BaseAdapter {
         }
 
         TextView txtId = (TextView) convertView.findViewById(R.id.listNoteId);
-        TextView txtEvent = (TextView) convertView.findViewById(R.id.listNoteTitle);
-        TextView txtDescription = (TextView) convertView.findViewById(R.id.listNoteDescription);
-        TextView txtDay = (TextView) convertView.findViewById(R.id.listNoteDay);
-        TextView txtDate = (TextView) convertView.findViewById(R.id.listNoteDate);
-
+        TextView txtTitle = (TextView) convertView.findViewById(R.id.listNoteTitle);
+        TextView txtLabel = (TextView) convertView.findViewById(R.id.listNoteLabel);
+        TextView txtNote = (TextView) convertView.findViewById(R.id.listNoteContent);
 
         txtId.setText(String.valueOf(noteItems.get(position).getId()));
-        txtEvent.setText(noteItems.get(position).getTitle());
+        txtTitle.setText(noteItems.get(position).getTitle());
+        txtLabel.setText(noteItems.get(position).getLabel());
 
         if (noteItems.get(position).getNote().length() < 200) {
-            txtDescription.setText(noteItems.get(position).getNote() + "...");
+            txtNote.setText(noteItems.get(position).getNote() + "...");
         } else {
-            txtDescription.setText(noteItems.get(position).getNote().substring(0, 200).toCharArray().toString() + "...");
+            txtNote.setText(noteItems.get(position).getNote().substring(0, 200).toCharArray().toString() + "...");
         }
-
-        txtDate.setText(noteItems.get(position).getDate());
-        txtDay.setText(noteItems.get(position).getDay());
 
         return convertView;
     }

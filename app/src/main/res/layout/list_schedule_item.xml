@@ -12,8 +12,7 @@
         android:id="@+id/leftDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:text="@string/dummy_number_medium"
         android:textStyle="bold"
@@ -24,8 +23,7 @@
         android:id="@+id/leftMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
         android:layout_below="@id/leftDate"
         android:text="@string/dummy_date_sort"
         android:textColor="@color/white"
@@ -38,7 +36,7 @@
         android:layout_height="20dp"
         android:contentDescription="@string/description_general"
         android:background="@color/white"
-        android:layout_marginStart="60dp"/>
+        android:layout_marginLeft="60dp"/>
 
     <ImageView
         android:id="@+id/timeline"
@@ -48,16 +46,16 @@
         android:layout_marginTop="30dp"
         android:contentDescription="@string/description_general"
         android:background="@color/white"
-        android:layout_marginStart="60dp"/>
+        android:layout_marginLeft="60dp"/>
 
     <ImageView
         android:id="@+id/listScheduleIcon"
         android:adjustViewBounds="true"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:paddingTop="10dp"
-        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
         android:contentDescription="@string/description_general"
         android:src="@drawable/ic_node" />
 
@@ -65,9 +63,9 @@
         android:id="@+id/listScheduleTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/listScheduleIcon"
-        android:paddingStart="0dp"
-        android:paddingEnd="20dp"
+        android:layout_toRightOf="@id/listScheduleIcon"
+        android:paddingLeft="0dp"
+        android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:text="@string/dummy_text_sort"
         android:textStyle="bold"
@@ -80,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listScheduleTitle"
-        android:layout_toEndOf="@id/listScheduleIcon"
+        android:layout_toRightOf="@id/listScheduleIcon"
         android:lines="2"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
@@ -94,9 +92,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listScheduleDescription"
-        android:layout_toEndOf="@id/listScheduleIcon"
+        android:layout_toRightOf="@id/listScheduleIcon"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
         android:text="@string/dummy_date_sort"
         android:textColor="@color/gray"
         android:textSize="12sp"/>
@@ -106,20 +104,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listScheduleDescription"
-        android:layout_toEndOf="@id/listScheduleDay"
+        android:layout_toRightOf="@id/listScheduleDay"
         android:layout_marginBottom="10dp"
         android:textStyle="bold"
-        android:paddingStart="0dp"
-        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
         android:text="@string/dummy_date_long"
         android:textColor="@color/gray"
         android:textSize="12sp"/>
 
     <TextView
+        android:id="@+id/listScheduleTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listScheduleDescription"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
         android:textStyle="bold"
         android:text="@string/label_detail"

@@ -20,7 +20,7 @@
 
 
     <TextView
-        android:id="@+id/listNoteDescription"
+        android:id="@+id/listNoteContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listNoteTitle"
@@ -32,34 +32,23 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/listNoteDay"
+        android:id="@+id/listNoteLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/listNoteDescription"
-        android:layout_marginEnd="5dp"
+        android:layout_below="@id/listNoteContent"
+        android:layout_marginRight="5dp"
+        android:paddingBottom="10dp"
         android:text="@string/dummy_date_sort"
         android:textColor="@color/gray"
         android:textSize="12sp"/>
 
     <TextView
-        android:id="@+id/listNoteDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/listNoteDescription"
-        android:layout_toEndOf="@id/listNoteDay"
+        android:layout_below="@id/listNoteContent"
+        android:layout_alignParentRight="true"
         android:textStyle="bold"
-        android:paddingStart="0dp"
-        android:paddingEnd="20dp"
-        android:text="@string/dummy_date_long"
-        android:textColor="@color/gray"
-        android:textSize="12sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/listNoteDescription"
-        android:layout_alignParentEnd="true"
-        android:textStyle="bold"
+        android:paddingBottom="10dp"
         android:text="@string/label_detail"
         android:textColor="@color/gray"
         android:textSize="12sp"/>

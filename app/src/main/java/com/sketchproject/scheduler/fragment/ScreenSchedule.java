@@ -1,5 +1,6 @@
 package com.sketchproject.scheduler.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
@@ -44,7 +45,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by Angga on 10/7/2015.
@@ -59,10 +59,11 @@ public class ScreenSchedule extends Fragment {
     private final String KEY_EVENT = "event";
     private final String KEY_DESCRIPTION = "description";
     private final String KEY_DATE = "date";
+    private final String KEY_TIME = "time";
 
     private ListView scheduleList;
     private ScheduleListAdapter scheduleAdapter;
-    private ArrayList<ScheduleItem> scheduleItem;
+    private ArrayList<ScheduleItem> scheduleItems;
 
     private AlertDialogManager alert;
     private ConnectionDetector connectionDetector;
@@ -102,14 +103,18 @@ public class ScreenSchedule extends Fragment {
 
         scheduleList.setDivider(null);
 
-        scheduleItem = new ArrayList<>();
+        scheduleItems = new ArrayList<>();
 
-        scheduleAdapter = new ScheduleListAdapter(getActivity(), scheduleItem);
+        scheduleAdapter = new ScheduleListAdapter(getActivity(), scheduleItems);
 
         scheduleList.setOnItemClickListener(new ListScheduleListener());
 
         createScheduleButton.setOnClickListener(new CreateScheduleListener());
 
+        updateScheduleList();
+    }
+
+    private void updateScheduleList(){
         if (connectionDetector.isNetworkAvailable()) {
             GetScheduleTask scheduleTask = new GetScheduleTask();
             scheduleTask.execute();
@@ -122,20 +127,29 @@ public class ScreenSchedule extends Fragment {
     private class ListScheduleListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String noteId = ((TextView) view.findViewById(R.id.listScheduleId)).getText().toString();
+            String scheduleId = ((TextView) view.findViewById(R.id.listScheduleId)).getText().toString();
             Intent intent = new Intent(getActivity(), ScheduleViewActivity.class);
-            intent.putExtra(KEY_ID, noteId);
-            startActivityForResult(intent, 100);
+            intent.putExtra(KEY_ID, scheduleId);
+            startActivityForResult(intent, 200);
         }
     }
 
     private class CreateScheduleListener implements View.OnClickListener {
         public void onClick(View v) {
-            Intent newNote = new Intent(getActivity(), ScheduleCreateActivity.class);
-            startActivityForResult(newNote, 200);
-        };
+            Intent newSchedule = new Intent(getActivity(), ScheduleCreateActivity.class);
+            startActivityForResult(newSchedule, 200);
+        }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 200){
+            if(resultCode == Activity.RESULT_CANCELED){
+                updateScheduleList();
+            }
+        }
+    }
 
     private class GetScheduleTask extends AsyncTask<Object, Void, JSONObject> {
 
@@ -226,6 +240,7 @@ public class ScreenSchedule extends Fragment {
                 if(scheduleData.getString("status").equals("success")){
                     JSONArray jsonSchedules = scheduleData.getJSONArray("schedules");
 
+                    scheduleItems.clear();
                     for(int i = 0; i < jsonSchedules.length(); i++){
                         JSONObject schedule = jsonSchedules.getJSONObject(i);
 
@@ -234,10 +249,11 @@ public class ScreenSchedule extends Fragment {
                         String description = schedule.getString(KEY_DESCRIPTION);
                         String date = Parser.formatDate(schedule.getString(KEY_DATE), "dd MM yyyy");
                         String day = Parser.getFullDay(schedule.getString(KEY_DATE)) + ",";
+                        String time = schedule.getString(KEY_TIME);
                         String leftMonth = Parser.getShortMonth(Parser.getMonthOfYear(schedule.getString(KEY_DATE)));
                         String leftDate = Parser.getDateOfMonth(schedule.getString(KEY_DATE));
 
-                        scheduleItem.add(new ScheduleItem(id, event, description, date, day, leftMonth, leftDate));
+                        scheduleItems.add(new ScheduleItem(id, event, description, date, day, time, leftMonth, leftDate));
                     }
                     scheduleList.setAdapter(scheduleAdapter);
                 }
