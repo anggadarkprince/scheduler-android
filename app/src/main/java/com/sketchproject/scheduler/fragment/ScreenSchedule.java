@@ -6,11 +6,11 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,31 +35,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class ScreenSchedule extends Fragment {
 
-    protected JSONObject scheduleData;
-
     public static final String TAG = ScreenSchedule.class.getSimpleName();
 
+    private final String KEY_USER_ID = "user_id";
+    private final String KEY_TOKEN = "token";
     private final String KEY_ID = "id";
     private final String KEY_EVENT = "event";
     private final String KEY_DESCRIPTION = "description";
     private final String KEY_DATE = "date";
     private final String KEY_TIME = "time";
+
+    private final String DATA_STATUS = "status";
+    private final String DATA_SCHEDULE = "schedules";
+
+    private JSONObject scheduleData;
 
     private ListView scheduleList;
     private ScheduleListAdapter scheduleAdapter;
@@ -87,10 +91,8 @@ public class ScreenSchedule extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         alert = new AlertDialogManager();
-
-        connectionDetector = new ConnectionDetector(getActivity().getApplicationContext());
-
-        session = new SessionManager(getActivity().getApplicationContext());
+        connectionDetector = new ConnectionDetector(getActivity());
+        session = new SessionManager(getActivity());
 
         loadingScreen = (LinearLayout) getActivity().findViewById(R.id.loadingScreen);
         loadingIcon = (ImageView) getActivity().findViewById(R.id.loadingIcon);
@@ -98,32 +100,33 @@ public class ScreenSchedule extends Fragment {
         loadingAnimation = (AnimationDrawable) loadingIcon.getBackground();
 
         createScheduleButton = (Button) getActivity().findViewById(R.id.buttonSave);
-
         scheduleList = (ListView) getActivity().findViewById(R.id.listSchedule);
-
         scheduleList.setDivider(null);
 
         scheduleItems = new ArrayList<>();
-
         scheduleAdapter = new ScheduleListAdapter(getActivity(), scheduleItems);
 
         scheduleList.setOnItemClickListener(new ListScheduleListener());
-
         createScheduleButton.setOnClickListener(new CreateScheduleListener());
 
         updateScheduleList();
     }
 
-    private void updateScheduleList(){
+    /**
+     * Update schedule list from database
+     */
+    public void updateScheduleList() {
         if (connectionDetector.isNetworkAvailable()) {
-            GetScheduleTask scheduleTask = new GetScheduleTask();
+            RetrieveScheduleHandler scheduleTask = new RetrieveScheduleHandler();
             scheduleTask.execute();
-        }
-        else {
-            Toast.makeText(getActivity().getApplicationContext(), "Network is unavailable!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.disconnect), Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * Listener each list item to call detail activity and show complete schedule by id
+     */
     private class ListScheduleListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -134,6 +137,9 @@ public class ScreenSchedule extends Fragment {
         }
     }
 
+    /**
+     * Listener to call form new schedule
+     */
     private class CreateScheduleListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent newSchedule = new Intent(getActivity(), ScheduleCreateActivity.class);
@@ -141,17 +147,30 @@ public class ScreenSchedule extends Fragment {
         }
     }
 
+    /**
+     * receive signal for result when call new schedule activity has closed
+     * so schedule list will be update on the fly
+     *
+     * @param requestCode identifier request from this activity
+     * @param resultCode  result type from called activity
+     * @param data        return data from called activity
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 200){
-            if(resultCode == Activity.RESULT_CANCELED){
+        if (requestCode == 200) {
+            if (resultCode == Activity.RESULT_CANCELED) {
                 updateScheduleList();
             }
         }
     }
 
-    private class GetScheduleTask extends AsyncTask<Object, Void, JSONObject> {
+
+    /**
+     * Async task to retrieve schedule related by logged in user
+     * this method will passing JSON object as [status] and [schedules]
+     */
+    private class RetrieveScheduleHandler extends AsyncTask<Object, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
@@ -160,13 +179,11 @@ public class ScreenSchedule extends Fragment {
             loadingAnimation.start();
         }
 
-
         @Override
         protected JSONObject doInBackground(Object[] params) {
-
             JSONObject jsonResponse = null;
 
-            try{
+            try {
                 URL scheduleUrl = new URL(Constant.URL_SCHEDULE_VIEW);
                 HttpURLConnection connection = (HttpURLConnection) scheduleUrl.openConnection();
 
@@ -177,8 +194,8 @@ public class ScreenSchedule extends Fragment {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("user_id", session.getUserDetails().get(SessionManager.KEY_ID));
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_USER_ID, session.getUserDetails().get(SessionManager.KEY_ID));
 
                 String query = builder.build().getEncodedQuery();
 
@@ -193,7 +210,7 @@ public class ScreenSchedule extends Fragment {
 
                 int responseCode = connection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK){
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);
                     int contentLength = connection.getContentLength();
@@ -202,18 +219,10 @@ public class ScreenSchedule extends Fragment {
 
                     String responseData = new String(charArray);
                     jsonResponse = new JSONObject(responseData);
-                }
-                else{
+                } else {
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -230,18 +239,20 @@ public class ScreenSchedule extends Fragment {
 
     }
 
-    public void handleScheduleResponse(){
-
-        if(scheduleData == null){
-            alert.showAlertDialog(getActivity().getApplicationContext(), getString(R.string.error_title), getString(R.string.error_message), false);
-        }
-        else{
+    /**
+     * Handle result schedule from database
+     * loop through and populate JSON array to list adapter
+     */
+    public void handleScheduleResponse() {
+        if (scheduleData == null) {
+            alert.showAlertDialog(getActivity(), getString(R.string.error_title), getString(R.string.error_message));
+        } else {
             try {
-                if(scheduleData.getString("status").equals("success")){
-                    JSONArray jsonSchedules = scheduleData.getJSONArray("schedules");
+                if (scheduleData.getString(DATA_STATUS).equals(Constant.STATUS_SUCCESS)) {
+                    JSONArray jsonSchedules = scheduleData.getJSONArray(DATA_SCHEDULE);
 
                     scheduleItems.clear();
-                    for(int i = 0; i < jsonSchedules.length(); i++){
+                    for (int i = 0; i < jsonSchedules.length(); i++) {
                         JSONObject schedule = jsonSchedules.getJSONObject(i);
 
                         int id = schedule.getInt(KEY_ID);
@@ -256,12 +267,10 @@ public class ScreenSchedule extends Fragment {
                         scheduleItems.add(new ScheduleItem(id, event, description, date, day, time, leftMonth, leftDate));
                     }
                     scheduleList.setAdapter(scheduleAdapter);
+                } else {
+                    alert.showAlertDialog(getActivity(), getString(R.string.error_title), getString(R.string.error_message));
                 }
-                else{
-                    alert.showAlertDialog(getActivity().getApplicationContext(), getString(R.string.error_title), getString(R.string.error_message), false);
-                }
-            }
-            catch(JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, "Exception caught: " + e);
             }
         }

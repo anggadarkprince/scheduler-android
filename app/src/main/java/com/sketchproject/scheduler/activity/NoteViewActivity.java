@@ -5,13 +5,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,23 +33,29 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/8/2015.
  */
 public class NoteViewActivity extends Activity {
 
     public static final String TAG = NoteViewActivity.class.getSimpleName();
+
     private final String KEY_ID = "id";
     private final String KEY_TOKEN = "token";
     private final String KEY_TITLE = "title";
     private final String KEY_LABEL = "label";
     private final String KEY_NOTE = "note";
+
+    private final String DATA_STATUS = "status";
+    private final String DATA_NOTE = "note";
+
+    private String noteId;
+    protected JSONObject noteData;
 
     private Button buttonBack;
     private Button buttonEdit;
@@ -68,8 +72,6 @@ public class NoteViewActivity extends Activity {
     private AlertDialogManager alert;
     private ConnectionDetector connectionDetector;
 
-    private String noteId;
-    protected JSONObject noteData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +80,7 @@ public class NoteViewActivity extends Activity {
         setContentView(R.layout.activity_note_view);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(getApplicationContext());
-
         session = new SessionManager(getApplicationContext());
 
         buttonBack = (Button) findViewById(R.id.buttonBack);
@@ -95,12 +95,6 @@ public class NoteViewActivity extends Activity {
         loadingIcon.setBackgroundResource(R.drawable.loading_animation);
         loadingAnimation = (AnimationDrawable) loadingIcon.getBackground();
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        loadingScreen.setMinimumHeight(size.y);
-
         buttonBack.setOnClickListener(new BackHandler());
         buttonEdit.setOnClickListener(new EditHandler());
         buttonDelete.setOnClickListener(new DeleteHandler());
@@ -111,24 +105,31 @@ public class NoteViewActivity extends Activity {
         updateNoteDetail();
     }
 
-    private void updateNoteDetail(){
+    /**
+     * Update note detail from database
+     */
+    public void updateNoteDetail(){
         if (connectionDetector.isNetworkAvailable()) {
-            new GetNoteViewTask().execute();
+            new RetrieveNoteHandler().execute();
         }
         else {
-            Toast.makeText(NoteViewActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+            Toast.makeText(NoteViewActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             finish();
         }
     }
 
-    private class GetNoteViewTask extends AsyncTask<Object, Void, JSONObject> {
+    /**
+     * Async task to retrieve note detail related tapped list
+     * this method will passing JSON object as [status] and [note]
+     */
+    private class RetrieveNoteHandler extends AsyncTask<Object, Void, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(NoteViewActivity.this);
-            progress.setMessage("Retrieving note data ...");
+            progress.setMessage(getString(R.string.loading_note_retrieve));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -181,13 +182,7 @@ public class NoteViewActivity extends Activity {
             }
             catch(MalformedURLException e){
                 Log.e(TAG, "Exception caught: " + e);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -202,20 +197,25 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * Handle result note from database
+     * get string from json object and pass to text view
+     */
     public void populateNoteResponse(){
         if(noteData == null){
-            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
                 if(noteData.getString("status").equals("success")){
-                    JSONObject setting = new JSONObject(noteData.getString("note"));
+                    JSONObject setting = new JSONObject(noteData.getString(DATA_NOTE));
                     labelTitle.setText(setting.getString(KEY_TITLE));
                     labelLabel.setText(setting.getString(KEY_LABEL));
                     labelNote.setText(setting.getString(KEY_NOTE));
                 }
                 else{
-                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
+                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                    finish();
                 }
             }
             catch(JSONException e){
@@ -224,6 +224,9 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for back to list button
+     */
     private class BackHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -231,6 +234,9 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for call edit activity and passing data
+     */
     private class EditHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -243,6 +249,14 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * receive signal for result when call edit note activity has closed
+     * so note detail will be updated on the fly
+     *
+     * @param requestCode identifier request from this activity
+     * @param resultCode  result type from called activity
+     * @param data        return data from called activity
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -253,17 +267,21 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for delete note button
+     * confirm to delete the note record
+     */
     private class DeleteHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             (new AlertDialog.Builder(NoteViewActivity.this))
-                    .setTitle("CONFIRM DELETE")
-                    .setMessage("Do you want to delete this note?")
+                    .setTitle(R.string.action_delete_confirm)
+                    .setMessage(R.string.message_note_delete)
                     .setCancelable(false)
                     .setPositiveButton("YES",new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            new TaskDeleteNoteData().execute();
+                            new DeleteNoteHandler().execute();
                         }
                     })
                     .setNegativeButton("NO",new DialogInterface.OnClickListener() {
@@ -275,14 +293,18 @@ public class NoteViewActivity extends Activity {
         }
     }
 
-    private class TaskDeleteNoteData extends AsyncTask<Object, Void, JSONObject> {
+    /**
+     * Async task to make delete request to server
+     * this method will return transaction delete status
+     */
+    private class DeleteNoteHandler extends AsyncTask<Object, Void, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(NoteViewActivity.this);
-            progress.setMessage("Deleting note data ...");
+            progress.setMessage(getString(R.string.loading_note_delete));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -335,13 +357,7 @@ public class NoteViewActivity extends Activity {
             }
             catch(MalformedURLException e){
                 Log.e(TAG, "Exception caught: " + e);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -355,24 +371,28 @@ public class NoteViewActivity extends Activity {
         }
     }
 
+    /**
+     * Handle result delete note from database
+     * check delete status
+     */
     public void handleDeleteNoteResponse(){
         if(noteData == null){
-            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteViewActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(noteData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
+                String status = noteData.getString(DATA_STATUS);
+                if(status.equals(Constant.STATUS_RESTRICT)){
+                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
                     finish();
                 }
-                else if(noteData.getString("status").equals("success")){
-                    //alert.showAlertDialog(NoteViewActivity.this, "Deleted", "Note successfully deleted", false);
+                else if(status.equals(Constant.STATUS_SUCCESS)){
                     Intent returnIntent = new Intent();
                     setResult(RESULT_CANCELED, returnIntent);
                     finish();
                 }
-                else if(noteData.getString("status").equals("failed")){
-                    alert.showAlertDialog(NoteViewActivity.this, "Failed", "Delete note failed", false);
+                else if(status.equals(Constant.STATUS_FAILED)){
+                    alert.showAlertDialog(NoteViewActivity.this, getString(R.string.action_failed), getString(R.string.message_note_delete_failed));
                 }
             }
             catch(JSONException e){

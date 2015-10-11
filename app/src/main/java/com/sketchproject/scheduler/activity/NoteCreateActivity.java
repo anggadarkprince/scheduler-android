@@ -23,27 +23,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class NoteCreateActivity extends Activity{
-    public static final String TAG = ScheduleCreateActivity.class.getSimpleName();
+    public static final String TAG = NoteCreateActivity.class.getSimpleName();
 
     private final String KEY_ID = "user_id";
     private final String KEY_TOKEN = "token";
     private final String KEY_TITLE = "title";
     private final String KEY_LABEL = "label";
     private final String KEY_NOTE = "note";
+
+    private final String DATA_STATUS = "status";
 
     protected JSONObject noteData;
 
@@ -85,9 +86,14 @@ public class NoteCreateActivity extends Activity{
         infoLabel = (TextView) findViewById(R.id.infoLabel);
         infoNote = (TextView) findViewById(R.id.infoNote);
 
-        buttonSave.setOnClickListener(new SaveNoteHandler());
+        buttonSave.setOnClickListener(new SaveHandler());
     }
 
+    /**
+     * check validation
+     *
+     * @return boolean
+     */
     private boolean isValidated(){
         boolean checkTitle = true;
         boolean checkLabel = true;
@@ -127,7 +133,10 @@ public class NoteCreateActivity extends Activity{
         return checkTitle && checkLabel && checkNote;
     }
 
-    private class SaveNoteHandler implements View.OnClickListener {
+    /**
+     * Listener for save button
+     */
+    private class SaveHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             if (connectionDetector.isNetworkAvailable()) {
@@ -136,29 +145,29 @@ public class NoteCreateActivity extends Activity{
                 infoNote.setVisibility(View.GONE);
                 if(isValidated()){
                     if (connectionDetector.isNetworkAvailable()) {
-                        new SaveNoteAsync().execute(title, label, note);
+                        new SaveNoteHandler().execute(title, label, note);
                     }
                     else {
-                        Toast.makeText(NoteCreateActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NoteCreateActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                     }
                 }
                 else{
-                    alert.showAlertDialog(NoteCreateActivity.this, "Validation", "Please complete the form", true);
+                    alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.validation), getString(R.string.validation_message));
                 }
             } else {
-                alert.showAlertDialog(NoteCreateActivity.this, "Save Failed", "No Internet Connection", false);
+                Toast.makeText(NoteCreateActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private class SaveNoteAsync extends AsyncTask<String, String, JSONObject> {
+    private class SaveNoteHandler extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(NoteCreateActivity.this);
-            progress.setMessage("Saving note data ...");
+            progress.setMessage(getString(R.string.loading_note_save));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -211,14 +220,7 @@ public class NoteCreateActivity extends Activity{
                 else{
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -233,24 +235,30 @@ public class NoteCreateActivity extends Activity{
         }
     }
 
+    /**
+     * Handle result save note from database
+     * check save status
+     */
     public void handleSaveNoteResponse(){
         if(noteData == null){
-            alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(noteData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
-                    finish();
-                }
-                else if(noteData.getString("status").equals("success")){
-                    //alert.showAlertDialog(ScheduleCreateActivity.this, "Created", "Note successfully created", false);
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
-                }
-                else if(noteData.getString("status").equals("failed")){
-                    alert.showAlertDialog(NoteCreateActivity.this, "Failed", "Save note failed", false);
+                String status = noteData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        finish();
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(NoteCreateActivity.this, getString(R.string.action_failed), getString(R.string.message_note_save_failed));
+                        break;
                 }
             }
             catch(JSONException e){

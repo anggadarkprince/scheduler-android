@@ -2,7 +2,6 @@ package com.sketchproject.scheduler.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,10 @@ import android.widget.TextView;
 import com.sketchproject.scheduler.R;
 import com.sketchproject.scheduler.model.ScheduleItem;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/8/2015.
  */
 public class ScheduleListAdapter extends BaseAdapter {
@@ -25,7 +23,7 @@ public class ScheduleListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<ScheduleItem> scheduleItem;
 
-    public ScheduleListAdapter(Context context, ArrayList<ScheduleItem> item){
+    public ScheduleListAdapter(Context context, ArrayList<ScheduleItem> item) {
         this.context = context;
         this.scheduleItem = item;
     }
@@ -63,22 +61,18 @@ public class ScheduleListAdapter extends BaseAdapter {
         ImageView timelineTop = (ImageView) convertView.findViewById(R.id.timelineTop);
         ImageView timelineBottom = (ImageView) convertView.findViewById(R.id.timeline);
 
-        if(position == getCount() - 1){
+        if (position == getCount() - 1) {
             timelineBottom.setVisibility(View.INVISIBLE);
-        }
-        else if(position == 0){
+        } else if (position == 0) {
             timelineTop.setVisibility(View.INVISIBLE);
         }
-
-        Log.i("list", scheduleItem.get(position).getDescription());
 
         txtId.setText(String.valueOf(scheduleItem.get(position).getId()));
         txtEvent.setText(scheduleItem.get(position).getEvent());
 
-        if(scheduleItem.get(position).getDescription().length() < 200){
+        if (scheduleItem.get(position).getDescription().length() < 200) {
             txtDescription.setText(scheduleItem.get(position).getDescription() + "...");
-        }
-        else{
+        } else {
             txtDescription.setText(scheduleItem.get(position).getDescription().substring(0, 200).toCharArray().toString() + "...");
         }
 

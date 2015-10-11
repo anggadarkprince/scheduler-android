@@ -22,6 +22,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sketchproject.scheduler.fragment.ScreenDashboard;
+import com.sketchproject.scheduler.fragment.ScreenNote;
+import com.sketchproject.scheduler.fragment.ScreenSchedule;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -106,7 +110,8 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_schedule),
                         getString(R.string.title_calendar),
                         getString(R.string.title_note),
-                        getString(R.string.title_setting)
+                        getString(R.string.title_setting),
+                        getString(R.string.title_logout)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -190,7 +195,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position) {
+    public void selectItem(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
@@ -250,7 +255,19 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_refresh) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            ScreenDashboard dashboard = (ScreenDashboard) getFragmentManager().findFragmentById(R.id.container);
+            if(dashboard!=null){
+                dashboard.updateDashboard();
+            }
+            ScreenSchedule schedule = (ScreenSchedule) getFragmentManager().findFragmentById(R.id.container);
+            if(schedule!=null){
+                schedule.updateScheduleList();
+            }
+            ScreenNote note = (ScreenNote) getFragmentManager().findFragmentById(R.id.container);
+            if(note!=null){
+                note.updateNoteList();
+            }
+            Toast.makeText(getActivity(), "DATA UPDATING", Toast.LENGTH_LONG).show();
             return true;
         }
 

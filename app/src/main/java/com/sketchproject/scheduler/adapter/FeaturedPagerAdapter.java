@@ -9,6 +9,7 @@ import com.sketchproject.scheduler.fragment.FeaturedNoteFragment;
 import com.sketchproject.scheduler.fragment.FeaturedScheduleFragment;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class FeaturedPagerAdapter extends FragmentPagerAdapter {

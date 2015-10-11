@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sketchproject.scheduler.library.ConnectionDetector;
 import com.sketchproject.scheduler.library.SessionManager;
@@ -23,22 +24,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class LoginActivity extends Activity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
+
+    private final String KEY_ID = "id";
+    private final String KEY_TOKEN = "token";
+    private final String KEY_NAME = "name";
+    private final String KEY_WORK = "work";
+    private final String KEY_ABOUT = "about";
+    private final String KEY_USERNAME = "username";
+    private final String KEY_PASSWORD = "password";
+
+    private final String DATA_STATUS = "status";
 
     protected JSONObject loginData;
 
@@ -61,7 +71,7 @@ public class LoginActivity extends Activity {
 
         session = new SessionManager(LoginActivity.this);
 
-        if(session.isLoggedIn()) {
+        if (session.isLoggedIn()) {
             Intent mainScreen = new Intent(getApplicationContext(), ApplicationActivity.class);
             mainScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(mainScreen);
@@ -69,7 +79,6 @@ public class LoginActivity extends Activity {
         }
 
         setContentView(R.layout.activity_login);
-
 
         alert = new AlertDialogManager();
 
@@ -91,25 +100,56 @@ public class LoginActivity extends Activity {
                     String username = textUsername.getText().toString();
                     String password = textPassword.getText().toString();
 
-                    if(username.trim().isEmpty() || password.trim().isEmpty()){
+                    if (username.trim().isEmpty() || password.trim().isEmpty()) {
                         loginMessage.setVisibility(View.VISIBLE);
-                        loginMessage.setText("Complete the login form");
-                        alert.showAlertDialog(LoginActivity.this, "Login failed", "Please enter username and password", false);
-                    }
-                    else{
+                        loginMessage.setText(getString(R.string.validation_message));
+                        alert.showAlertDialog(LoginActivity.this, getString(R.string.login_failed_title), getString(R.string.validation_login_empty));
+                    } else {
                         loginMessage.setVisibility(View.GONE);
                         new LoginChecker().execute(username, password);
                     }
-                }
-                else{
-                    alert.showAlertDialog(LoginActivity.this, "Login Failed", "No Internet Connection", false);
+                } else {
+                    Toast.makeText(LoginActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
+    /**
+     * Handle transaction login
+     * save user data in session and call featured activity
+     */
+    public void handleLoginResponse() {
+        if (loginData == null) {
+            alert.showAlertDialog(LoginActivity.this, getString(R.string.error_title), getString(R.string.error_message));
+        } else {
+            try {
+                if (loginData.getString(DATA_STATUS).equals(Constant.STATUS_GRANTED)) {
+                    session.createLoginSession(
+                            loginData.getString(KEY_ID),
+                            loginData.getString(KEY_NAME),
+                            loginData.getString(KEY_WORK),
+                            loginData.getString(KEY_ABOUT),
+                            loginData.getString(KEY_USERNAME),
+                            loginData.getString(KEY_TOKEN));
 
-    private class LoginChecker extends AsyncTask<String, String, JSONObject>{
+                    Intent featuredScreen = new Intent(getBaseContext(), FeaturedActivity.class);
+                    featuredScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(featuredScreen);
+                    finish();
+                } else {
+                    alert.showAlertDialog(LoginActivity.this, getString(R.string.login_failed_title), getString(R.string.login_failed_message));
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Exception caught: " + e);
+            }
+        }
+    }
+
+    /**
+     * Async task for check credential on server
+     */
+    private class LoginChecker extends AsyncTask<String, String, JSONObject> {
 
         @Override
         protected void onPreExecute() {
@@ -118,13 +158,12 @@ public class LoginActivity extends Activity {
             loadingAnimation.start();
         }
 
-
         @Override
         protected JSONObject doInBackground(String... args) {
 
             JSONObject jsonResponse = null;
 
-            try{
+            try {
                 URL loginUrl = new URL(Constant.URL_LOGIN);
                 HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
                 connection.setReadTimeout(10000);
@@ -134,8 +173,8 @@ public class LoginActivity extends Activity {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", args[0])
-                        .appendQueryParameter("password", args[1]);
+                        .appendQueryParameter(KEY_USERNAME, args[0])
+                        .appendQueryParameter(KEY_PASSWORD, args[1]);
 
                 String query = builder.build().getEncodedQuery();
 
@@ -150,7 +189,7 @@ public class LoginActivity extends Activity {
 
                 int responseCode = connection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK){
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);
                     int contentLength = connection.getContentLength();
@@ -160,19 +199,11 @@ public class LoginActivity extends Activity {
                     String responseData = new String(charArray);
                     Log.e(TAG, responseData);
                     jsonResponse = new JSONObject(responseData);
-                }
-                else{
+                } else {
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                logException(e);
-            }
-            catch(IOException e){
-                logException(e);
-            }
-            catch (Exception e){
-                logException(e);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception caught: " + e);
             }
 
             return jsonResponse;
@@ -184,42 +215,6 @@ public class LoginActivity extends Activity {
             loadingScreen.setVisibility(View.GONE);
             loadingAnimation.stop();
             handleLoginResponse();
-        }
-
-    }
-
-    private void logException(Exception e) {
-        Log.e(TAG, "Exception caught: " + e);
-    }
-
-    public void handleLoginResponse(){
-
-        if(loginData == null){
-            alert.showAlertDialog(LoginActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
-        }
-        else{
-            try {
-                if(loginData.getString("status").equals("granted")){
-                    session.createLoginSession(
-                            loginData.getString("id"),
-                            loginData.getString("name"),
-                            loginData.getString("work"),
-                            loginData.getString("about"),
-                            loginData.getString("username"),
-                            loginData.getString("token"));
-
-                    Intent featuredScreen = new Intent(getBaseContext(), FeaturedActivity.class);
-                    featuredScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(featuredScreen);
-                    finish();
-                }
-                else{
-                    alert.showAlertDialog(LoginActivity.this, getString(R.string.login_failed_title), getString(R.string.login_failed_message), false);
-                }
-            }
-            catch(JSONException e){
-                logException(e);
-            }
         }
     }
 

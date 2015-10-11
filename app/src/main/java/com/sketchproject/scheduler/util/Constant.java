@@ -1,18 +1,16 @@
 package com.sketchproject.scheduler.util;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class Constant {
 
     public static final String STATUS_SUCCESS 		    = "success";
-    public static final String STATUS_WARNING 		    = "warning";
     public static final String STATUS_FAILED 		    = "failed";
     public static final String STATUS_GRANTED 		    = "granted";
-    public static final String STATUS_DENIED 		    = "denied";
-    public static final String STATUS_EXIST 		    = "exist";
     public static final String STATUS_RESTRICT 		    = "restrict";
-    public static final String STATUS_EXECUTED 		    = "executed";
+    public static final String STATUS_MISMATCH 		    = "mismatch";
 
     public static final String SERVER 				    = "http://10.0.3.2/scheduler/";
     public static final String URL_LOGIN 			    = SERVER+"user/login";
@@ -20,6 +18,7 @@ public class Constant {
     public static final String URL_REGISTER 		    = SERVER+"user/register";
     public static final String URL_ACCOUNT 			    = SERVER+"user/edit";
     public static final String URL_ACCOUNT_UPDATE	    = SERVER+"user/update";
+    public static final String URL_DASHBOARD		    = SERVER+"schedule/summary";
 
     public static final String URL_NOTE_VIEW 		    = SERVER+"note";
     public static final String URL_NOTE_INSERT 		    = SERVER+"note/insert";

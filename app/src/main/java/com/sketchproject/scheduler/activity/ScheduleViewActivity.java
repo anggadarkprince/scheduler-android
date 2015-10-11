@@ -5,17 +5,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +30,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/8/2015.
  */
 public class ScheduleViewActivity extends Activity {
@@ -55,6 +49,12 @@ public class ScheduleViewActivity extends Activity {
     private final String KEY_LOCATION = "location";
     private final String KEY_DESCRIPTION = "description";
 
+    private final String DATA_STATUS = "status";
+    private final String DATA_SCHEDULE = "schedule";
+
+    private String scheduleId;
+    private JSONObject scheduleData;
+
     private Button buttonBack;
     private Button buttonEdit;
     private Button buttonDelete;
@@ -64,16 +64,10 @@ public class ScheduleViewActivity extends Activity {
     private TextView labelLocation;
     private TextView labelDescription;
 
-    private LinearLayout loadingScreen;
-    private ImageView loadingIcon;
-    private AnimationDrawable loadingAnimation;
-
     private SessionManager session;
     private AlertDialogManager alert;
     private ConnectionDetector connectionDetector;
 
-    private String scheduleId;
-    protected JSONObject scheduleData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +76,7 @@ public class ScheduleViewActivity extends Activity {
         setContentView(R.layout.activity_schedule_view);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(getApplicationContext());
-
         session = new SessionManager(getApplicationContext());
 
         buttonBack = (Button) findViewById(R.id.buttonBack);
@@ -96,17 +88,6 @@ public class ScheduleViewActivity extends Activity {
         labelLocation = (TextView) findViewById(R.id.location);
         labelDescription = (TextView) findViewById(R.id.description);
 
-        loadingScreen = (LinearLayout) findViewById(R.id.loadingScreen);
-        loadingIcon = (ImageView) findViewById(R.id.loadingIcon);
-        loadingIcon.setBackgroundResource(R.drawable.loading_animation);
-        loadingAnimation = (AnimationDrawable) loadingIcon.getBackground();
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        loadingScreen.setMinimumHeight(size.y);
-
         buttonBack.setOnClickListener(new BackHandler());
         buttonEdit.setOnClickListener(new EditHandler());
         buttonDelete.setOnClickListener(new DeleteHandler());
@@ -117,24 +98,31 @@ public class ScheduleViewActivity extends Activity {
         updateScheduleDetail();
     }
 
-    private void updateScheduleDetail(){
+    /**
+     * Update schedule detail from database
+     */
+    public void updateScheduleDetail(){
         if (connectionDetector.isNetworkAvailable()) {
-            new GetScheduleViewTask().execute();
+            new RetrieveScheduleHandler().execute();
         }
         else {
-            Toast.makeText(ScheduleViewActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+            Toast.makeText(ScheduleViewActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             finish();
         }
     }
 
-    private class GetScheduleViewTask extends AsyncTask<Object, Void, JSONObject> {
+    /**
+     * Async task to retrieve schedule detail related tapped list
+     * this method will passing JSON object as [status] and [schedule]
+     */
+    private class RetrieveScheduleHandler extends AsyncTask<Object, Void, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(ScheduleViewActivity.this);
-            progress.setMessage("Retrieving schedule data ...");
+            progress.setMessage(getString(R.string.loading_schedule_retrieve));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -187,13 +175,7 @@ public class ScheduleViewActivity extends Activity {
             }
             catch(MalformedURLException e){
                 Log.e(TAG, "Exception caught: " + e);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -208,14 +190,18 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * Handle result schedule from database
+     * get string from json object and pass to text view
+     */
     public void populateScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("success")){
-                    JSONObject setting = new JSONObject(scheduleData.getString("schedule"));
+                if(scheduleData.getString(DATA_STATUS).equals(Constant.STATUS_SUCCESS)){
+                    JSONObject setting = new JSONObject(scheduleData.getString(DATA_SCHEDULE));
                     labelEvent.setText(setting.getString(KEY_EVENT));
                     labelDate.setText(setting.getString(KEY_DATE));
                     labelTime.setText(setting.getString(KEY_TIME));
@@ -223,7 +209,8 @@ public class ScheduleViewActivity extends Activity {
                     labelDescription.setText(setting.getString(KEY_DESCRIPTION));
                 }
                 else{
-                    alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), false);
+                    alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                    finish();
                 }
             }
             catch(JSONException e){
@@ -232,6 +219,9 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for back to list button
+     */
     private class BackHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -239,6 +229,9 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for call edit activity and passing data
+     */
     private class EditHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -253,6 +246,14 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * receive signal for result when call edit schedule activity has closed
+     * so schedule detail will be updated on the fly
+     *
+     * @param requestCode identifier request from this activity
+     * @param resultCode  result type from called activity
+     * @param data        return data from called activity
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -263,17 +264,21 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * Listener for delete schedule button
+     * confirm to delete the schedule record
+     */
     private class DeleteHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             (new AlertDialog.Builder(ScheduleViewActivity.this))
-                    .setTitle("CONFIRM DELETE")
-                    .setMessage("Do you want to delete this schedule?")
+                    .setTitle(getString(R.string.action_delete_confirm))
+                    .setMessage(R.string.message_schedule_delete)
                     .setCancelable(false)
                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            new TaskDeleteScheduleData().execute();
+                            new DeleteScheduleHandler().execute();
                         }
                     })
                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -285,14 +290,18 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
-    private class TaskDeleteScheduleData extends AsyncTask<Object, Void, JSONObject> {
+    /**
+     * Async task to make delete request to server
+     * this method will return transaction delete status
+     */
+    private class DeleteScheduleHandler extends AsyncTask<Object, Void, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(ScheduleViewActivity.this);
-            progress.setMessage("Deleting schedule data ...");
+            progress.setMessage(getString(R.string.loading_schedule_delete));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -313,8 +322,8 @@ public class ScheduleViewActivity extends Activity {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("id", scheduleId);
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_ID, scheduleId);
 
                 String query = builder.build().getEncodedQuery();
 
@@ -345,13 +354,7 @@ public class ScheduleViewActivity extends Activity {
             }
             catch(MalformedURLException e){
                 Log.e(TAG, "Exception caught: " + e);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -365,24 +368,30 @@ public class ScheduleViewActivity extends Activity {
         }
     }
 
+    /**
+     * Handle result delete schedule from database
+     * check delete status
+     */
     public void handleDeleteScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("success")){
-                    //alert.showAlertDialog(ScheduleViewActivity.this, "Deleted", "Schedule successfully deleted", false);
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("failed")){
-                    alert.showAlertDialog(ScheduleViewActivity.this, "Failed", "Delete schedule failed", false);
+                String status = scheduleData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        finish();
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(ScheduleViewActivity.this, getString(R.string.action_failed), getString(R.string.message_schedule_delete_failed));
+                        break;
                 }
             }
             catch(JSONException e){

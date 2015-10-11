@@ -23,17 +23,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class NoteEditActivity extends Activity{
@@ -44,6 +43,8 @@ public class NoteEditActivity extends Activity{
     private final String KEY_TITLE = "title";
     private final String KEY_LABEL = "label";
     private final String KEY_NOTE = "note";
+
+    private final String DATA_STATUS = "status";
 
     private String noteId;
     protected JSONObject noteData;
@@ -72,9 +73,7 @@ public class NoteEditActivity extends Activity{
         setContentView(R.layout.activity_note_edit);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(getApplicationContext());
-
         session = new SessionManager(getApplicationContext());
 
         buttonUpdate = (Button) findViewById(R.id.buttonUpdate);
@@ -104,29 +103,33 @@ public class NoteEditActivity extends Activity{
                 infoNote.setVisibility(View.GONE);
                 if(isValidated()){
                     if (connectionDetector.isNetworkAvailable()) {
-                        new UpdateNoteAsync().execute(title, label, note);
+                        new UpdateNoteHandler().execute(title, label, note);
                     }
                     else {
-                        Toast.makeText(NoteEditActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NoteEditActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                     }
                 }
                 else{
-                    alert.showAlertDialog(NoteEditActivity.this, "Validation", "Please complete the form", true);
+                    alert.showAlertDialog(NoteEditActivity.this, getString(R.string.validation), getString(R.string.validation_message));
                 }
             } else {
-                alert.showAlertDialog(NoteEditActivity.this, "Save Failed", "No Internet Connection", false);
+                Toast.makeText(NoteEditActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private class UpdateNoteAsync extends AsyncTask<String, String, JSONObject> {
+    /**
+     * Async task to make update request to server
+     * this method will return transaction update status
+     */
+    private class UpdateNoteHandler extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(NoteEditActivity.this);
-            progress.setMessage("Updating note data ...");
+            progress.setMessage(getString(R.string.loading_note_update));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -179,14 +182,7 @@ public class NoteEditActivity extends Activity{
                 else{
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -203,22 +199,24 @@ public class NoteEditActivity extends Activity{
 
     public void handleSaveNoteResponse(){
         if(noteData == null){
-            alert.showAlertDialog(NoteEditActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(NoteEditActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(noteData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(NoteEditActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
-                    finish();
-                }
-                else if(noteData.getString("status").equals("success")){
-                    //alert.showAlertDialog(NoteCreateActivity.this, "Created", "Note successfully created", false);
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
-                }
-                else if(noteData.getString("status").equals("failed")){
-                    alert.showAlertDialog(NoteEditActivity.this, "Failed", "Update note failed", false);
+                String status = noteData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(NoteEditActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        finish();
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(NoteEditActivity.this, getString(R.string.action_failed), getString(R.string.message_note_update));
+                        break;
                 }
             }
             catch(JSONException e){
@@ -227,6 +225,11 @@ public class NoteEditActivity extends Activity{
         }
     }
 
+    /**
+     * Check validation
+     *
+     * @return boolean
+     */
     private boolean isValidated(){
         boolean checkTitle = true;
         boolean checkLabel = true;

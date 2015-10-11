@@ -1,7 +1,10 @@
 package com.sketchproject.scheduler.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,8 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sketchproject.scheduler.R;
@@ -23,17 +28,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class ScheduleEditActivity extends Activity {
@@ -47,8 +52,10 @@ public class ScheduleEditActivity extends Activity {
     private final String KEY_LOCATION = "location";
     private final String KEY_DESCRIPTION = "description";
 
+    private final String DATA_STATUS = "status";
+
     private String scheduleId;
-    protected JSONObject scheduleData;
+    private JSONObject scheduleData;
 
     private Button buttonUpdate;
     private EditText textEvent;
@@ -73,6 +80,41 @@ public class ScheduleEditActivity extends Activity {
     private String location;
     private String description;
 
+    private int year;
+    private int month;
+    private int day;
+    private int hour;
+    private int minute;
+
+    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener(){
+
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth;
+            day = selectedDay;
+
+            textDate.setText(new StringBuilder().append(year).append("-").append(month + 1).append("-").append(day));
+        }
+    };
+
+    private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
+            hour = selectedHour;
+            minute = selectedMinute;
+
+            textTime.setText(new StringBuilder().append(pad(hour)).append(":").append(pad(minute)));
+        }
+    };
+
+    private static String pad(int c){
+        if(c >= 10){
+            return String.valueOf(c);
+        }
+        return "0"+String.valueOf(c);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +122,7 @@ public class ScheduleEditActivity extends Activity {
         setContentView(R.layout.activity_schedule_edit);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(getApplicationContext());
-
         session = new SessionManager(getApplicationContext());
 
         buttonUpdate = (Button) findViewById(R.id.buttonUpdate);
@@ -98,7 +138,18 @@ public class ScheduleEditActivity extends Activity {
         infoLocation = (TextView) findViewById(R.id.infoLocation);
         infoDescription = (TextView) findViewById(R.id.infoDescription);
 
+        textDate.setOnClickListener(new DateClickHandler());
+        textDate.setOnFocusChangeListener(new DateFocusHandler());
+        textTime.setOnClickListener(new TimeClickHandler());
+        textTime.setOnFocusChangeListener(new TimeFocusHandler());
         buttonUpdate.setOnClickListener(new UpdateSchedule());
+
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
 
         Intent i = getIntent();
         scheduleId = i.getStringExtra(KEY_ID);
@@ -109,6 +160,52 @@ public class ScheduleEditActivity extends Activity {
         textDescription.setText(i.getStringExtra(KEY_DESCRIPTION));
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if(id == 1){
+            return new DatePickerDialog(this, datePickerListener, year, month, day);
+        }
+        else if(id == 2){
+            return new TimePickerDialog(this, timePickerListener, hour, minute, true);
+        }
+        return null;
+    }
+
+    private class DateFocusHandler implements View.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus){
+                showDialog(1);
+            }
+        }
+    }
+
+    private class DateClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDialog(1);
+        }
+    }
+
+    private class TimeFocusHandler implements View.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus){
+                showDialog(2);
+            }
+        }
+    }
+
+    private class TimeClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDialog(2);
+        }
+    }
+
+    /**
+     * Listener for update button
+     */
     private class UpdateSchedule implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -120,29 +217,33 @@ public class ScheduleEditActivity extends Activity {
                 infoDescription.setVisibility(View.GONE);
                 if(isValidated()){
                     if (connectionDetector.isNetworkAvailable()) {
-                        new UpdateScheduleAsync().execute(event, date, time, location, description);
+                        new UpdateScheduleHandler().execute(event, date, time, location, description);
                     }
                     else {
-                        Toast.makeText(ScheduleEditActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ScheduleEditActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                     }
                 }
                 else{
-                    alert.showAlertDialog(ScheduleEditActivity.this, "Validation", "Please complete the form", true);
+                    alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.validation), getString(R.string.validation_message));
                 }
             } else {
-                alert.showAlertDialog(ScheduleEditActivity.this, "Save Failed", "No Internet Connection", false);
+                Toast.makeText(ScheduleEditActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private class UpdateScheduleAsync extends AsyncTask<String, String, JSONObject> {
+    /**
+     * Async task to make update request to server
+     * this method will return transaction update status
+     */
+    private class UpdateScheduleHandler extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(ScheduleEditActivity.this);
-            progress.setMessage("Updating schedule data ...");
+            progress.setMessage(getString(R.string.loading_schedule_update));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -197,14 +298,7 @@ public class ScheduleEditActivity extends Activity {
                 else{
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -215,28 +309,34 @@ public class ScheduleEditActivity extends Activity {
         protected void onPostExecute(JSONObject result) {
             scheduleData = result;
             progress.dismiss();
-            handleSaveScheduleResponse();
+            handleUpdateScheduleResponse();
         }
     }
 
-    public void handleSaveScheduleResponse(){
+    /**
+     * Handle result update schedule from database
+     * check update status
+     */
+    public void handleUpdateScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("success")){
-                    //alert.showAlertDialog(ScheduleCreateActivity.this, "Created", "Schedule successfully created", false);
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("failed")){
-                    alert.showAlertDialog(ScheduleEditActivity.this, "Failed", "Update schedule failed", false);
+                String status = scheduleData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        finish();
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(ScheduleEditActivity.this, getString(R.string.action_failed), getString(R.string.message_schedule_update));
+                        break;
                 }
             }
             catch(JSONException e){
@@ -245,6 +345,11 @@ public class ScheduleEditActivity extends Activity {
         }
     }
 
+    /**
+     * Check validation
+     *
+     * @return boolean
+     */
     private boolean isValidated(){
         boolean checkEvent = true;
         boolean checkDate = true;

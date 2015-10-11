@@ -13,6 +13,7 @@ import com.sketchproject.scheduler.R;
 
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class FeaturedScheduleFragment extends Fragment {
@@ -34,7 +35,7 @@ public class FeaturedScheduleFragment extends Fragment {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Intent mainScreen = new Intent(getActivity().getApplicationContext(), ApplicationActivity.class);
+                Intent mainScreen = new Intent(getActivity(), ApplicationActivity.class);
                 startActivity(mainScreen);
                 getActivity().finish();
             }

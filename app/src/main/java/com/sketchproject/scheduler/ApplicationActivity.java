@@ -16,13 +16,15 @@ import com.sketchproject.scheduler.fragment.ScreenDashboard;
 import com.sketchproject.scheduler.fragment.ScreenNote;
 import com.sketchproject.scheduler.fragment.ScreenSchedule;
 import com.sketchproject.scheduler.fragment.ScreenSetting;
+import com.sketchproject.scheduler.library.SessionManager;
 
 
 /**
  * Created by Angga on 10/7/2015.
  */
-public class ApplicationActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class ApplicationActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private SessionManager session;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -38,6 +40,8 @@ public class ApplicationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application);
+
+        session = new SessionManager(ApplicationActivity.this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -69,13 +73,18 @@ public class ApplicationActivity extends AppCompatActivity
             case 4:
                 objectFragment = new ScreenSetting();
                 break;
+            case 5:
+                objectFragment = new ScreenDashboard();
+                finish();
+                session.logoutUser();
+                break;
         }
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, objectFragment)
                 .commit();
 
-        //onSectionAttached(position + 1);
+        onSectionAttached(position + 1);
     }
 
     public void onSectionAttached(int number) {
@@ -95,6 +104,9 @@ public class ApplicationActivity extends AppCompatActivity
                 break;
             case 5:
                 mTitle = getString(R.string.title_setting);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_logout);
                 break;
         }
         getSupportActionBar().setTitle(mTitle);
@@ -130,6 +142,8 @@ public class ApplicationActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            onNavigationDrawerItemSelected(4);
+            mNavigationDrawerFragment.selectItem(4);
             return true;
         }
 

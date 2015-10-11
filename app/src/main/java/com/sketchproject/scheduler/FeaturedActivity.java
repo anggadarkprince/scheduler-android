@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.sketchproject.scheduler.adapter.FeaturedPagerAdapter;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class FeaturedActivity extends FragmentActivity {
@@ -26,7 +27,6 @@ public class FeaturedActivity extends FragmentActivity {
         pagerAdapter = new FeaturedPagerAdapter(getSupportFragmentManager());
 
         layoutTap = (LinearLayout) findViewById(R.id.labelTap);
-
         viewPager = (ViewPager) findViewById(R.id.featuredPager);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -45,6 +45,10 @@ public class FeaturedActivity extends FragmentActivity {
         });
     }
 
+
+    /**
+     * @param position index position of pager view
+     */
     private void changePage(int position){
         ImageView view;
 

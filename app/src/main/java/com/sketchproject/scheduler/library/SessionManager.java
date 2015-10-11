@@ -1,13 +1,13 @@
 package com.sketchproject.scheduler.library;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import com.sketchproject.scheduler.LoginActivity;
+
+import java.util.HashMap;
 
 public class SessionManager {
 	// Shared Preferences
@@ -22,7 +22,7 @@ public class SessionManager {
     // Shared pref mode
     int PRIVATE_MODE = 0;
      
-    // Sharedpref file name
+    // Shared pref file name
     private static final String PREF_NAME = "SPF_PREF";
      
     // All Shared Preferences Keys
@@ -51,11 +51,20 @@ public class SessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
+        editor.apply();
     }
-     
+
+
     /**
      * Create login session
-     * */
+     *
+     * @param id is identification number of record data in database
+     * @param name of user
+     * @param work is title or role in company
+     * @param about is simple description of user
+     * @param username is a account id for credential
+     * @param token is a secret key which generated from id and username
+     */
     public void createLoginSession(String id, String name, String work, String about, String username, String token){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
@@ -80,13 +89,16 @@ public class SessionManager {
          
         // commit changes
         editor.commit();
-    }   
-     
+    }
+
+
     /**
      * Check login method will check user login status
      * If false it will redirect user to login page
      * Else won't do anything
-     * */
+     *
+     * @return boolean
+     */
     public boolean checkLogin(){
         // Check login status
         if(!this.isLoggedIn()){
@@ -105,14 +117,15 @@ public class SessionManager {
         return true;
          
     }
-     
-     
-     
+
+
     /**
      * Get stored session data
-     * */
+     *
+     * @return HashMap
+     */
     public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<String, String>();
+        HashMap<String, String> user = new HashMap<>();
         // user name
         user.put(KEY_ID, pref.getString(KEY_ID, null));
         
@@ -166,7 +179,6 @@ public class SessionManager {
     /**
      * Quick check for login
      * **/
-    // Get Login State
     public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
     }

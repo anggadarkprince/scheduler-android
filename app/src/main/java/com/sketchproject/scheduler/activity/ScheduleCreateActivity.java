@@ -1,21 +1,21 @@
 package com.sketchproject.scheduler.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sketchproject.scheduler.R;
@@ -28,20 +28,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class ScheduleCreateActivity extends Activity {
+
     public static final String TAG = ScheduleCreateActivity.class.getSimpleName();
 
     private final String KEY_ID = "user_id";
@@ -51,6 +52,8 @@ public class ScheduleCreateActivity extends Activity {
     private final String KEY_TIME = "time";
     private final String KEY_LOCATION = "location";
     private final String KEY_DESCRIPTION = "description";
+
+    private final String DATA_STATUS = "status";
 
     protected JSONObject scheduleData;
 
@@ -67,10 +70,6 @@ public class ScheduleCreateActivity extends Activity {
     private TextView infoLocation;
     private TextView infoDescription;
 
-    private LinearLayout loadingScreen;
-    private ImageView loadingIcon;
-    private AnimationDrawable loadingAnimation;
-
     private SessionManager session;
     private AlertDialogManager alert;
     private ConnectionDetector connectionDetector;
@@ -81,6 +80,41 @@ public class ScheduleCreateActivity extends Activity {
     private String location;
     private String description;
 
+    private int year;
+    private int month;
+    private int day;
+    private int hour;
+    private int minute;
+
+    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener(){
+
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth;
+            day = selectedDay;
+
+            textDate.setText(new StringBuilder().append(year).append("-").append(month + 1).append("-").append(day));
+        }
+    };
+
+    private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
+            hour = selectedHour;
+            minute = selectedMinute;
+
+            textTime.setText(new StringBuilder().append(pad(hour)).append(":").append(pad(minute)));
+        }
+    };
+
+    private static String pad(int c){
+        if(c >= 10){
+            return String.valueOf(c);
+        }
+        return "0"+String.valueOf(c);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +122,7 @@ public class ScheduleCreateActivity extends Activity {
         setContentView(R.layout.activity_schedule_add);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(ScheduleCreateActivity.this);
-
         session = new SessionManager(ScheduleCreateActivity.this);
 
         buttonSave = (Button) findViewById(R.id.buttonSave);
@@ -106,20 +138,68 @@ public class ScheduleCreateActivity extends Activity {
         infoLocation = (TextView) findViewById(R.id.infoLocation);
         infoDescription = (TextView) findViewById(R.id.infoDescription);
 
-        buttonSave.setOnClickListener(new SaveScheduleHandler());
+        textDate.setOnClickListener(new DateClickHandler());
+        textDate.setOnFocusChangeListener(new DateFocusHandler());
+        textTime.setOnClickListener(new TimeClickHandler());
+        textTime.setOnFocusChangeListener(new TimeFocusHandler());
+        buttonSave.setOnClickListener(new SaveHandler());
 
-        loadingScreen = (LinearLayout) findViewById(R.id.loadingScreen);
-        loadingIcon = (ImageView) findViewById(R.id.loadingIcon);
-        loadingIcon.setBackgroundResource(R.drawable.loading_animation);
-        loadingAnimation = (AnimationDrawable) loadingIcon.getBackground();
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        loadingScreen.setMinimumHeight(size.y);
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if(id == 1){
+            return new DatePickerDialog(this, datePickerListener, year, month, day);
+        }
+        else if(id == 2){
+            return new TimePickerDialog(this, timePickerListener, hour, minute, true);
+        }
+        return null;
+    }
+
+    private class DateFocusHandler implements View.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus){
+                showDialog(1);
+            }
+        }
+    }
+
+    private class DateClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDialog(1);
+        }
+    }
+
+    private class TimeFocusHandler implements View.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus){
+                showDialog(2);
+            }
+        }
+    }
+
+    private class TimeClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDialog(2);
+        }
+    }
+
+    /**
+     * check validation
+     *
+     * @return boolean
+     */
     private boolean isValidated(){
         boolean checkEvent = true;
         boolean checkDate = true;
@@ -185,7 +265,10 @@ public class ScheduleCreateActivity extends Activity {
         return checkEvent && checkDate && checkTime && checkLocation && checkDescription;
     }
 
-    private class SaveScheduleHandler implements View.OnClickListener {
+    /**
+     * Listener for save button
+     */
+    private class SaveHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             if (connectionDetector.isNetworkAvailable()) {
@@ -196,29 +279,33 @@ public class ScheduleCreateActivity extends Activity {
                 infoDescription.setVisibility(View.GONE);
                 if(isValidated()){
                     if (connectionDetector.isNetworkAvailable()) {
-                        new SaveScheduleAsync().execute(event, date, time, location, description);
+                        new SaveScheduleHandler().execute(event, date, time, location, description);
                     }
                     else {
-                        Toast.makeText(ScheduleCreateActivity.this, "Network is unavailable!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ScheduleCreateActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                     }
                 }
                 else{
-                    alert.showAlertDialog(ScheduleCreateActivity.this, "Validation", "Please complete the form", true);
+                    alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.validation), getString(R.string.validation_message));
                 }
             } else {
-                alert.showAlertDialog(ScheduleCreateActivity.this, "Save Failed", "No Internet Connection", false);
+                Toast.makeText(ScheduleCreateActivity.this, getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private class SaveScheduleAsync extends AsyncTask<String, String, JSONObject> {
+    /**
+     * Async task to make save request to server
+     * this method will return transaction save status
+     */
+    private class SaveScheduleHandler extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog progress;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progress = new ProgressDialog(ScheduleCreateActivity.this);
-            progress.setMessage("Saving schedule data ...");
+            progress.setMessage(getString(R.string.loading_schedule_save));
             progress.setIndeterminate(false);
             progress.setCancelable(false);
             progress.show();
@@ -273,14 +360,7 @@ public class ScheduleCreateActivity extends Activity {
                 else{
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -295,24 +375,30 @@ public class ScheduleCreateActivity extends Activity {
         }
     }
 
+    /**
+     * Handle result save schedule from database
+     * check save status
+     */
     public void handleSaveScheduleResponse(){
         if(scheduleData == null){
-            alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.error_title), getString(R.string.error_message), false);
+            alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.error_title), getString(R.string.error_message));
         }
         else{
             try {
-                if(scheduleData.getString("status").equals("restrict")){
-                    alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message), true);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("success")){
-                    //alert.showAlertDialog(ScheduleCreateActivity.this, "Created", "Schedule successfully created", false);
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
-                }
-                else if(scheduleData.getString("status").equals("failed")){
-                    alert.showAlertDialog(ScheduleCreateActivity.this, "Failed", "Save schedule failed", false);
+                String status = scheduleData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        finish();
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(ScheduleCreateActivity.this, getString(R.string.action_failed), getString(R.string.message_schedule_save_failed));
+                        break;
                 }
             }
             catch(JSONException e){
@@ -320,4 +406,5 @@ public class ScheduleCreateActivity extends Activity {
             }
         }
     }
+
 }

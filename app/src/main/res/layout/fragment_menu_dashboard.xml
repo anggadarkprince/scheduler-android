@@ -20,8 +20,8 @@
             android:id="@+id/dashboardAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginBottom="15dip"
-            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="40dp"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/description_general"
             android:src="@drawable/avatar" />
@@ -54,9 +54,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:baselineAligned="false">
 
         <RelativeLayout
@@ -73,10 +73,11 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/title_schedule"
                 android:textColor="@color/silver"
+                android:textStyle="bold"
                 android:gravity="center"/>
 
             <TextView
-                android:id="@+id/ValueSchedule"
+                android:id="@+id/valueSchedule"
                 android:layout_below="@id/labelSchedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -108,10 +109,11 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/title_incoming"
                 android:textColor="@color/silver"
+                android:textStyle="bold"
                 android:gravity="center"/>
 
             <TextView
-                android:id="@+id/ValueIncoming"
+                android:id="@+id/valueIncoming"
                 android:layout_below="@id/labelIncoming"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,10 +145,11 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/title_note"
                 android:textColor="@color/silver"
+                android:textStyle="bold"
                 android:gravity="center"/>
 
             <TextView
-                android:id="@+id/ValueNote"
+                android:id="@+id/valueNote"
                 android:layout_below="@id/labelNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -161,7 +164,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/buttonSave"
+        android:id="@+id/buttonCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
@@ -177,6 +180,84 @@
         android:textStyle="bold"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/white" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/cover">
+
+        <LinearLayout
+            android:id="@+id/buttonTap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/buttonIncoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@drawable/transparent"
+                android:text="@string/label_button_incoming"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+            <Button
+                android:id="@+id/buttonToday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@drawable/transparent"
+                android:text="@string/label_button_today"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+            <Button
+                android:id="@+id/buttonTomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@drawable/transparent"
+                android:text="@string/label_button_tomorrow"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonBorder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonTap">
+            <ImageView
+                android:id="@+id/stripButtonIncoming"
+                android:layout_width="wrap_content"
+                android:layout_height="3dp"
+                android:background="@color/blue_light"
+                android:contentDescription="@string/description_general"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/stripButtonToday"
+                android:layout_width="wrap_content"
+                android:layout_height="3dp"
+                android:background="@color/white"
+                android:contentDescription="@string/description_general"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/stripButtonTomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="3dp"
+                android:background="@color/white"
+                android:contentDescription="@string/description_general"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/dashboardPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/buttonBorder"/>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

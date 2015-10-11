@@ -2,7 +2,6 @@ package com.sketchproject.scheduler.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.sketchproject.scheduler.model.NoteItem;
 import java.util.ArrayList;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/8/2015.
  */
 public class NoteListAdapter extends BaseAdapter {

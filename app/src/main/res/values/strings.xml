@@ -12,7 +12,7 @@
 
     <!-- color palette dark theme -->
     <color name="background">#424458</color>
-    <color name="cover">#424458</color>
+    <color name="cover">#383a4c</color>
     <color name="white">#ffffff</color>
     <color name="gray">#a5a5a5</color>
     <color name="silver">#8285a0</color>
@@ -60,9 +60,9 @@
     <string name="label_field_event">EVENT / ACTIVITY</string>
     <string name="hint_event_text">Eg. Meeting with Client</string>
     <string name="label_field_date">DATE</string>
-    <string name="hint_time_text">Eg. 08:00 AM</string>
+    <string name="hint_time_text">Eg. 08:00</string>
     <string name="label_field_time">TIME</string>
-    <string name="hint_date_text">Eg. 20 August 2015</string>
+    <string name="hint_date_text">Eg. 2015–08–17</string>
     <string name="label_field_location">LOCATION</string>
     <string name="hint_location_text">Eg. Shangrilla Hotel</string>
     <string name="hint_description_text">Write your details event and activity</string>
@@ -104,6 +104,47 @@
     <string name="login_saved_message">Your data has been successfully saved</string>
     <string name="restrict_title">Restricted</string>
     <string name="restrict_message">You don\'t have an authorization, Please Login</string>
+    <string name="label_button_incoming">INCOMING</string>
+    <string name="label_button_today">TODAY</string>
+    <string name="label_button_tomorrow">TOMORROW</string>
+    <string name="disconnect">Network is unavailable!</string>
+    <string name="validation_name_empty">Field Name can\'t be empty</string>
+    <string name="validation_name_maxlength">Field Name allow max length 100 characters</string>
+    <string name="validation_work_empty">Field Work can\'t be empty</string>
+    <string name="validation_work_maxlength">Field Work allow max length 100 characters</string>
+    <string name="validation_about_empty">Field About can\'t be empty</string>
+    <string name="validation_about_maxlength">Field About allow max length 300 characters</string>
+    <string name="validation_password_empty">Type your current Password to save</string>
+    <string name="validation_password_new_mismatch">New password must match</string>
+    <string name="validation">Validation</string>
+    <string name="validation_message">Please input the form properly</string>
+    <string name="loading_setting_update">Updating setting data...</string>
+    <string name="validation_login_empty">Please enter username and password</string>
+    <string name="validation_password_mismatch">Please input current correct password</string>
+    <string name="action_failed">Failed</string>
+    <string name="action_updated">Updated</string>
+    <string name="message_setting_password_mismatch">Your current password is mismatch</string>
+    <string name="message_setting_update_success">Account setting successfully updated</string>
+    <string name="message_setting_update_failed">Nothing setting updated</string>
+    <string name="loading_dashboard_retrieve">Retrieving dashboard data...</string>
+    <string name="loading_schedule_retrieve">Retrieving schedule data...</string>
+    <string name="action_delete_confirm">Confirm Delete</string>
+    <string name="message_schedule_delete">Do you want to delete this schedule?</string>
+    <string name="loading_schedule_delete">Deleting schedule data...</string>
+    <string name="message_schedule_delete_failed">Delete schedule failed</string>
+    <string name="loading_schedule_update">Updating schedule data...</string>
+    <string name="message_schedule_update">Nothing schedule updated</string>
+    <string name="loading_schedule_save">Saving schedule data...</string>
+    <string name="message_schedule_save_failed">Save schedule failed</string>
+    <string name="loading_note_retrieve">Retrieving note data...</string>
+    <string name="message_note_delete">Do you want to delete this note?</string>
+    <string name="loading_note_delete">Deleting note data...</string>
+    <string name="message_note_delete_failed">Delete note failed</string>
+    <string name="loading_note_update">Updating note data...</string>
+    <string name="message_note_update">Nothing note updated</string>
+    <string name="loading_note_save">Saving note data...</string>
+    <string name="message_note_save_failed">Save note failed</string>
+    <string name="title_logout">LOGOUT</string>
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">

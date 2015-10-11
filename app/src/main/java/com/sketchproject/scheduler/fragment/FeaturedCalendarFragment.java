@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.sketchproject.scheduler.R;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class FeaturedCalendarFragment extends Fragment {

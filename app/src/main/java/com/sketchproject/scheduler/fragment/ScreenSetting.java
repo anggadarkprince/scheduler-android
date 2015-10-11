@@ -1,18 +1,18 @@
 package com.sketchproject.scheduler.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sketchproject.scheduler.ApplicationActivity;
-import com.sketchproject.scheduler.FeaturedActivity;
 import com.sketchproject.scheduler.R;
 import com.sketchproject.scheduler.library.ConnectionDetector;
 import com.sketchproject.scheduler.library.SessionManager;
@@ -39,20 +37,31 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/7/2015.
  */
 public class ScreenSetting extends Fragment {
 
     public static final String TAG = ScreenSetting.class.getSimpleName();
 
-    protected JSONObject settingData;
+    private final String KEY_ID = "id";
+    private final String KEY_TOKEN = "token";
+    private final String KEY_NAME = "name";
+    private final String KEY_WORK = "work";
+    private final String KEY_ABOUT = "about";
+    private final String KEY_USERNAME = "username";
+    private final String KEY_PASSWORD = "password";
+    private final String KEY_PASSWORD_NEW = "password_new";
+
+    private final String DATA_STATUS = "status";
+    private final String DATA_USER = "user";
+
+    private JSONObject settingData;
 
     private Button buttonSave;
     private EditText textName;
@@ -93,18 +102,16 @@ public class ScreenSetting extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         alert = new AlertDialogManager();
-
         connectionDetector = new ConnectionDetector(getContext());
-
-        session = new SessionManager(getActivity().getApplicationContext());
+        session = new SessionManager(getActivity());
 
         buttonSave = (Button) getActivity().findViewById(R.id.buttonSave);
         textName = (EditText) getActivity().findViewById(R.id.name);
         textWork = (EditText) getActivity().findViewById(R.id.work);
         textAbout = (EditText) getActivity().findViewById(R.id.about);
-        textPassword =  (EditText) getActivity().findViewById(R.id.password);
-        textNewPassword =  (EditText) getActivity().findViewById(R.id.newPassword);
-        textConfirmPassword =  (EditText) getActivity().findViewById(R.id.confirmPassword);
+        textPassword = (EditText) getActivity().findViewById(R.id.password);
+        textNewPassword = (EditText) getActivity().findViewById(R.id.newPassword);
+        textConfirmPassword = (EditText) getActivity().findViewById(R.id.confirmPassword);
 
         infoName = (TextView) getActivity().findViewById(R.id.infoName);
         infoWork = (TextView) getActivity().findViewById(R.id.infoWork);
@@ -126,16 +133,26 @@ public class ScreenSetting extends Fragment {
 
         buttonSave.setOnClickListener(new SaveSettingHandler());
 
+        retrieveUser();
+    }
+
+    /**
+     * Retrieving user account data
+     */
+    private void retrieveUser(){
         if (connectionDetector.isNetworkAvailable()) {
-            GetSettingTask scheduleTask = new GetSettingTask();
+            RetrieveSettingHandler scheduleTask = new RetrieveSettingHandler();
             scheduleTask.execute();
-        }
-        else {
-            Toast.makeText(getContext(), "Network is unavailable!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.disconnect), Toast.LENGTH_LONG).show();
         }
     }
 
-    private class GetSettingTask extends AsyncTask<Object, Void, JSONObject> {
+    /**
+     * Async task to retrieve user by id and token from database
+     * this method will passing JSON object as [status] and [user]
+     */
+    private class RetrieveSettingHandler extends AsyncTask<Object, Void, JSONObject> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -147,7 +164,7 @@ public class ScreenSetting extends Fragment {
         protected JSONObject doInBackground(Object[] params) {
             JSONObject jsonResponse = null;
 
-            try{
+            try {
                 URL scheduleUrl = new URL(Constant.URL_ACCOUNT);
                 HttpURLConnection connection = (HttpURLConnection) scheduleUrl.openConnection();
 
@@ -158,8 +175,8 @@ public class ScreenSetting extends Fragment {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", session.getUserDetails().get(SessionManager.KEY_TOKEN))
-                        .appendQueryParameter("id", session.getUserDetails().get(SessionManager.KEY_ID));
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN))
+                        .appendQueryParameter(KEY_ID, session.getUserDetails().get(SessionManager.KEY_ID));
 
                 String query = builder.build().getEncodedQuery();
 
@@ -174,7 +191,7 @@ public class ScreenSetting extends Fragment {
 
                 int responseCode = connection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK){
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);
                     int contentLength = connection.getContentLength();
@@ -183,20 +200,12 @@ public class ScreenSetting extends Fragment {
 
                     String responseData = new String(charArray);
                     jsonResponse = new JSONObject(responseData);
-                }
-                else{
+                } else {
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
+            } catch (MalformedURLException e) {
                 Log.e(TAG, "Exception caught: " + e);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -212,23 +221,25 @@ public class ScreenSetting extends Fragment {
         }
     }
 
-    public void populateSettingResponse(){
-        if(settingData == null){
-            alert.showAlertDialog(getContext(), getString(R.string.error_title), getString(R.string.error_message), false);
-        }
-        else{
+    /**
+     * Populating data from database to input text
+     * check if data null or not
+     * catch exception if json cannot parsed
+     */
+    public void populateSettingResponse() {
+        if (settingData == null) {
+            alert.showAlertDialog(getContext(), getString(R.string.error_title), getString(R.string.error_message));
+        } else {
             try {
-                if(settingData.getString("status").equals("success")){
-                    JSONObject setting = new JSONObject(settingData.getString("user"));
-                    textName.setText(setting.getString("name"));
-                    textWork.setText(setting.getString("work"));
-                    textAbout.setText(setting.getString("about"));
+                if (settingData.getString(DATA_STATUS).equals(Constant.STATUS_SUCCESS)) {
+                    JSONObject setting = new JSONObject(settingData.getString(DATA_USER));
+                    textName.setText(setting.getString(KEY_NAME));
+                    textWork.setText(setting.getString(KEY_WORK));
+                    textAbout.setText(setting.getString(KEY_ABOUT));
+                } else {
+                    alert.showAlertDialog(getContext(), getString(R.string.restrict_title), getString(R.string.restrict_message));
                 }
-                else{
-                    alert.showAlertDialog(getContext(), getString(R.string.restrict_title), getString(R.string.restrict_message), false);
-                }
-            }
-            catch(JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
         }
@@ -237,9 +248,10 @@ public class ScreenSetting extends Fragment {
     /**
      * form validation
      * check length and required data
+     *
      * @return boolean
      */
-    private boolean isValidated(){
+    private boolean isValidated() {
         boolean checkName = true;
         boolean checkWork = true;
         boolean checkAbout = true;
@@ -247,53 +259,49 @@ public class ScreenSetting extends Fragment {
         boolean checkConfirmPassword = true;
 
         name = textName.getText().toString();
-        if(name.trim().isEmpty()){
-            infoName.setText("Field Name can't be empty");
+        if (name.trim().isEmpty()) {
+            infoName.setText(getString(R.string.validation_name_empty));
             infoName.setVisibility(View.VISIBLE);
             checkName = false;
-        }
-        else if(name.length() > 100){
-            infoName.setText("Field Name allow max length 100 characters");
+        } else if (name.length() > 100) {
+            infoName.setText(getString(R.string.validation_name_maxlength));
             infoName.setVisibility(View.VISIBLE);
             checkName = false;
         }
 
         work = textWork.getText().toString();
-        if(work.trim().isEmpty()){
-            infoWork.setText("Field Work can't be empty");
+        if (work.trim().isEmpty()) {
+            infoWork.setText(getString(R.string.validation_work_empty));
             infoWork.setVisibility(View.VISIBLE);
             checkWork = false;
-        }
-        else if(name.length() > 100){
-            infoWork.setText("Field Work allow max length 100 characters");
+        } else if (name.length() > 100) {
+            infoWork.setText(getString(R.string.validation_work_maxlength));
             infoWork.setVisibility(View.VISIBLE);
             checkWork = false;
         }
 
         about = textAbout.getText().toString();
-        if(about.trim().isEmpty()){
-            infoAbout.setText("Field About can't be empty");
+        if (about.trim().isEmpty()) {
+            infoAbout.setText(getString(R.string.validation_about_empty));
             infoAbout.setVisibility(View.VISIBLE);
             checkAbout = false;
-        }
-        else if(about.length() > 300){
-            infoAbout.setText("Field About allow max length 300 characters");
+        } else if (about.length() > 300) {
+            infoAbout.setText(getString(R.string.validation_about_maxlength));
             infoAbout.setVisibility(View.VISIBLE);
             checkAbout = false;
         }
 
         password = textPassword.getText().toString();
-        if(password.trim().isEmpty()){
-            infoPassword.setText("Type your current Password to save");
+        if (password.trim().isEmpty()) {
+            infoPassword.setText(getString(R.string.validation_password_empty));
             infoPassword.setVisibility(View.VISIBLE);
             checkPassword = false;
         }
 
         newPassword = textNewPassword.getText().toString();
         confirmPassword = textConfirmPassword.getText().toString();
-        Log.e(TAG, newPassword+"  "+confirmPassword);
-        if(!newPassword.trim().equals(confirmPassword.trim())){
-            infoConfirmPassword.setText("New password must match");
+        if (!newPassword.trim().equals(confirmPassword.trim())) {
+            infoConfirmPassword.setText(getString(R.string.validation_password_new_mismatch));
             infoConfirmPassword.setVisibility(View.VISIBLE);
             checkConfirmPassword = false;
         }
@@ -301,6 +309,11 @@ public class ScreenSetting extends Fragment {
         return checkName && checkWork && checkAbout && checkPassword && checkConfirmPassword;
     }
 
+    /**
+     * Listener for button save
+     * check connection, reset validation info and revalidate
+     * passing params to Async task
+     */
     private class SaveSettingHandler implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -310,32 +323,40 @@ public class ScreenSetting extends Fragment {
                 infoAbout.setVisibility(View.GONE);
                 infoPassword.setVisibility(View.GONE);
                 infoConfirmPassword.setVisibility(View.GONE);
-                if(isValidated()){
-                    new UpdateSettingAsync().execute(name, work, about, password, newPassword);
-                }
-                else{
-                    alert.showAlertDialog(getContext(), "Validation", "Please complete the form", true);
+                if (isValidated()) {
+                    new UpdateSettingHandler().execute(name, work, about, password, newPassword);
+                } else {
+                    alert.showAlertDialog(getContext(), getString(R.string.validation), getString(R.string.validation_message));
                 }
             } else {
-                alert.showAlertDialog(getContext(), "Save Failed", "No Internet Connection", false);
+                Toast.makeText(getContext(), getString(R.string.disconnect), Toast.LENGTH_LONG).show();
             }
         }
     }
 
 
-    private class UpdateSettingAsync extends AsyncTask<String, String, JSONObject> {
+    /**
+     * Async task to update user by id and token to database
+     * this method will receive status transaction from REST API
+     */
+    private class UpdateSettingHandler extends AsyncTask<String, String, JSONObject> {
+        private ProgressDialog progress;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingScreen.setVisibility(View.VISIBLE);
-            loadingAnimation.start();
+            progress = new ProgressDialog(getActivity());
+            progress.setMessage(getString(R.string.loading_setting_update));
+            progress.setIndeterminate(false);
+            progress.setCancelable(false);
+            progress.show();
         }
 
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONObject jsonResponse = null;
 
-            try{
+            try {
                 URL accountUrl = new URL(Constant.URL_ACCOUNT_UPDATE);
                 HttpURLConnection connection = (HttpURLConnection) accountUrl.openConnection();
                 connection.setReadTimeout(10000);
@@ -345,13 +366,13 @@ public class ScreenSetting extends Fragment {
                 connection.setDoOutput(true);
 
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("name", params[0])
-                        .appendQueryParameter("work", params[1])
-                        .appendQueryParameter("about", params[2])
-                        .appendQueryParameter("password", params[3])
-                        .appendQueryParameter("password_new", params[4])
-                        .appendQueryParameter("id", session.getUserDetails().get(SessionManager.KEY_ID))
-                        .appendQueryParameter("username", session.getUserDetails().get(SessionManager.KEY_USERNAME));
+                        .appendQueryParameter(KEY_NAME, params[0])
+                        .appendQueryParameter(KEY_WORK, params[1])
+                        .appendQueryParameter(KEY_ABOUT, params[2])
+                        .appendQueryParameter(KEY_PASSWORD, params[3])
+                        .appendQueryParameter(KEY_PASSWORD_NEW, params[4])
+                        .appendQueryParameter(KEY_ID, session.getUserDetails().get(SessionManager.KEY_ID))
+                        .appendQueryParameter(KEY_USERNAME, session.getUserDetails().get(SessionManager.KEY_USERNAME));
 
                 String query = builder.build().getEncodedQuery();
 
@@ -366,7 +387,7 @@ public class ScreenSetting extends Fragment {
 
                 int responseCode = connection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK){
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);
                     int contentLength = connection.getContentLength();
@@ -374,20 +395,11 @@ public class ScreenSetting extends Fragment {
                     reader.read(charArray);
 
                     String responseData = new String(charArray);
-                    Log.e(TAG, responseData);
                     jsonResponse = new JSONObject(responseData);
-                }
-                else{
+                } else {
                     Log.i(TAG, "Unsuccessful HTTP Response Code: " + responseCode);
                 }
-            }
-            catch(MalformedURLException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch(IOException e){
-                Log.e(TAG, "Exception caught: " + e);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "Exception caught: " + e);
             }
 
@@ -397,35 +409,42 @@ public class ScreenSetting extends Fragment {
         @Override
         protected void onPostExecute(JSONObject result) {
             settingData = result;
-            loadingScreen.setVisibility(View.GONE);
-            loadingAnimation.stop();
+            progress.dismiss();
             handleSaveSettingResponse();
         }
     }
 
-    public void handleSaveSettingResponse(){
-        if(settingData == null){
-            alert.showAlertDialog(getContext(), getString(R.string.error_title), getString(R.string.error_message), false);
-        }
-        else{
+    /**
+     * Handle transaction status from database after update the setting
+     * [RESTRICT] the token had sent is not available on server
+     * [MISMATCH] the current password is mismatch with database which related with account
+     * [SUCCESS] the request update and transaction has been completing successfully
+     * [FAILED] something is getting wrong on server or nothing data changes sent
+     */
+    public void handleSaveSettingResponse() {
+        if (settingData == null) {
+            alert.showAlertDialog(getContext(), getString(R.string.error_title), getString(R.string.error_message));
+        } else {
             try {
                 textPassword.setText("");
-                if(settingData.getString("status").equals("restrict")){
-                    infoPassword.setText("Please input current correct password");
-                    infoPassword.setVisibility(View.VISIBLE);
-                    alert.showAlertDialog(getContext(), getString(R.string.restrict_title), getString(R.string.restrict_message), true);
+                String status = settingData.getString(DATA_STATUS);
+                switch (status) {
+                    case Constant.STATUS_RESTRICT:
+                        alert.showAlertDialog(getContext(), getString(R.string.restrict_title), getString(R.string.restrict_message));
+                        break;
+                    case Constant.STATUS_MISMATCH:
+                        infoPassword.setText(getString(R.string.validation_password_mismatch));
+                        infoPassword.setVisibility(View.VISIBLE);
+                        alert.showAlertDialog(getContext(), getString(R.string.action_failed), getString(R.string.message_setting_password_mismatch));
+                        break;
+                    case Constant.STATUS_SUCCESS:
+                        alert.showAlertDialog(getContext(), getString(R.string.action_updated), getString(R.string.message_setting_update_success));
+                        break;
+                    case Constant.STATUS_FAILED:
+                        alert.showAlertDialog(getContext(), getString(R.string.action_failed), getString(R.string.message_setting_update_failed));
+                        break;
                 }
-                else if(settingData.getString("status").equals("mismatch")){
-                    alert.showAlertDialog(getContext(), "Mismatched", "Your current password is mismatch", true);
-                }
-                else if(settingData.getString("status").equals("success")){
-                    alert.showAlertDialog(getContext(), "Updated", "Account setting updated", false);
-                }
-                else if(settingData.getString("status").equals("failed")){
-                    alert.showAlertDialog(getContext(), "Failed", "Account update failed", false);
-                }
-            }
-            catch(JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
         }

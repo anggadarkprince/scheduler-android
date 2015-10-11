@@ -1,6 +1,7 @@
 package com.sketchproject.scheduler.model;
 
 /**
+ * Scheduler Android App
  * Created by Angga on 10/8/2015.
  */
 public class ScheduleItem {
