@@ -61,11 +61,13 @@ public class ScheduleListAdapter extends BaseAdapter {
         ImageView timelineTop = (ImageView) convertView.findViewById(R.id.timelineTop);
         ImageView timelineBottom = (ImageView) convertView.findViewById(R.id.timeline);
 
+        /*
         if (position == getCount() - 1) {
             timelineBottom.setVisibility(View.INVISIBLE);
         } else if (position == 0) {
             timelineTop.setVisibility(View.INVISIBLE);
         }
+        */
 
         txtId.setText(String.valueOf(scheduleItem.get(position).getId()));
         txtEvent.setText(scheduleItem.get(position).getEvent());

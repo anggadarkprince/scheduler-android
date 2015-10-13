@@ -65,6 +65,7 @@ public class ScreenSchedule extends Fragment {
 
     private JSONObject scheduleData;
 
+    private TextView emptyMessage;
     private ListView scheduleList;
     private ScheduleListAdapter scheduleAdapter;
     private ArrayList<ScheduleItem> scheduleItems;
@@ -99,6 +100,7 @@ public class ScreenSchedule extends Fragment {
         loadingIcon.setBackgroundResource(R.drawable.loading_animation);
         loadingAnimation = (AnimationDrawable) loadingIcon.getBackground();
 
+        emptyMessage = (TextView) getActivity().findViewById(R.id.emptyMessage);
         createScheduleButton = (Button) getActivity().findViewById(R.id.buttonSave);
         scheduleList = (ListView) getActivity().findViewById(R.id.listSchedule);
         scheduleList.setDivider(null);
@@ -250,6 +252,13 @@ public class ScreenSchedule extends Fragment {
             try {
                 if (scheduleData.getString(DATA_STATUS).equals(Constant.STATUS_SUCCESS)) {
                     JSONArray jsonSchedules = scheduleData.getJSONArray(DATA_SCHEDULE);
+
+                    if(jsonSchedules.length() == 0){
+                        emptyMessage.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        emptyMessage.setVisibility(View.GONE);
+                    }
 
                     scheduleItems.clear();
                     for (int i = 0; i < jsonSchedules.length(); i++) {

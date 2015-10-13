@@ -253,7 +253,7 @@ public class NoteEditActivity extends Activity{
             infoLabel.setVisibility(View.VISIBLE);
             checkLabel = false;
         }
-        else if(label.length() > 10){
+        else if(label.length() > 50){
             infoLabel.setText("Field Label allow max length 50 characters");
             infoLabel.setVisibility(View.VISIBLE);
             checkLabel = false;

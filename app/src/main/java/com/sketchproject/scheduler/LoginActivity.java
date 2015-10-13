@@ -188,7 +188,7 @@ public class LoginActivity extends Activity {
                 connection.connect();
 
                 int responseCode = connection.getResponseCode();
-
+Log.e(TAG, String.valueOf(responseCode));
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);

@@ -30,6 +30,7 @@
     <string name="dummy_date_sort">17/01</string>
     <string name="dummy_date_medium">17\-01\-2015</string>
     <string name="dummy_date_long">17 January 2015</string>
+    <string name="dummy_number_initial">0</string>
     <string name="dummy_number_short">4</string>
     <string name="dummy_number_medium">52</string>
     <string name="dummy_number_long">398</string>
@@ -145,6 +146,9 @@
     <string name="loading_note_save">Saving note data...</string>
     <string name="message_note_save_failed">Save note failed</string>
     <string name="title_logout">LOGOUT</string>
+    <string name="title_today">TODAY</string>
+    <string name="title_tomorrow">TOMORROW</string>
+    <string name="message_no_data">No data available</string>
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">

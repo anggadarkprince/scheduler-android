@@ -11,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +24,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sketchproject.scheduler.fragment.ScreenDashboard;
+import com.sketchproject.scheduler.fragment.ScreenIncoming;
 import com.sketchproject.scheduler.fragment.ScreenNote;
 import com.sketchproject.scheduler.fragment.ScreenSchedule;
+import com.sketchproject.scheduler.fragment.ScreenToday;
+import com.sketchproject.scheduler.fragment.ScreenTomorrow;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -101,14 +105,16 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        mDrawerListView.setAdapter(new ArrayAdapter<>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
                         getString(R.string.title_dashboard),
                         getString(R.string.title_schedule),
-                        getString(R.string.title_calendar),
+                        getString(R.string.title_incoming),
+                        getString(R.string.title_today),
+                        getString(R.string.title_tomorrow),
                         getString(R.string.title_note),
                         getString(R.string.title_setting),
                         getString(R.string.title_logout)
@@ -255,18 +261,66 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_refresh) {
-            ScreenDashboard dashboard = (ScreenDashboard) getFragmentManager().findFragmentById(R.id.container);
-            if(dashboard!=null){
-                dashboard.updateDashboard();
+            try{
+                ScreenDashboard dashboard = (ScreenDashboard) getFragmentManager().findFragmentById(R.id.container);
+                if(dashboard!=null){
+                    dashboard.updateDashboard();
+                }
             }
-            ScreenSchedule schedule = (ScreenSchedule) getFragmentManager().findFragmentById(R.id.container);
-            if(schedule!=null){
-                schedule.updateScheduleList();
+            catch(ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
             }
-            ScreenNote note = (ScreenNote) getFragmentManager().findFragmentById(R.id.container);
-            if(note!=null){
-                note.updateNoteList();
+
+            try{
+                ScreenSchedule schedule = (ScreenSchedule) getFragmentManager().findFragmentById(R.id.container);
+                if(schedule!=null){
+                    schedule.updateScheduleList();
+                }
             }
+            catch(ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
+            }
+
+            try{
+                ScreenNote note = (ScreenNote) getFragmentManager().findFragmentById(R.id.container);
+                if(note!=null){
+                    note.updateNoteList();
+                }
+            }
+            catch (ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
+            }
+
+            try{
+                ScreenIncoming incoming = (ScreenIncoming) getFragmentManager().findFragmentById(R.id.container);
+                if(incoming!=null){
+                    incoming.updateScheduleList();
+                }
+            }
+            catch (ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
+            }
+
+            try{
+                ScreenToday today = (ScreenToday) getFragmentManager().findFragmentById(R.id.container);
+                if(today!=null){
+                    today.updateScheduleList();
+                }
+            }
+            catch (ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
+            }
+
+            try{
+                ScreenTomorrow tomorrow = (ScreenTomorrow) getFragmentManager().findFragmentById(R.id.container);
+                if(tomorrow!=null){
+                    tomorrow.updateScheduleList();
+                }
+            }
+            catch (ClassCastException e){
+                Log.e("REFRESH", e.getMessage());
+            }
+
             Toast.makeText(getActivity(), "DATA UPDATING", Toast.LENGTH_LONG).show();
             return true;
         }

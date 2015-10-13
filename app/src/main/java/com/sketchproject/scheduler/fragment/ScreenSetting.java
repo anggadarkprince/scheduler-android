@@ -372,7 +372,8 @@ public class ScreenSetting extends Fragment {
                         .appendQueryParameter(KEY_PASSWORD, params[3])
                         .appendQueryParameter(KEY_PASSWORD_NEW, params[4])
                         .appendQueryParameter(KEY_ID, session.getUserDetails().get(SessionManager.KEY_ID))
-                        .appendQueryParameter(KEY_USERNAME, session.getUserDetails().get(SessionManager.KEY_USERNAME));
+                        .appendQueryParameter(KEY_USERNAME, session.getUserDetails().get(SessionManager.KEY_USERNAME))
+                        .appendQueryParameter(KEY_TOKEN, session.getUserDetails().get(SessionManager.KEY_TOKEN));
 
                 String query = builder.build().getEncodedQuery();
 

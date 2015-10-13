@@ -31,7 +31,7 @@
                     android:textSize="30sp"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="10dp"/>
 
                 <TextView
                     android:id="@+id/labelSubtitle"
@@ -70,6 +70,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="200"
                     android:inputType="text">
 
                     <requestFocus />
@@ -106,6 +107,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="10"
                     android:inputType="date">
                 </EditText>
 
@@ -134,6 +136,7 @@
                     android:ems="10"
                     android:hint="@string/hint_time_text"
                     android:singleLine="true"
+                    android:maxLength="8"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/white"
                     android:textColorHint="@color/gray"
@@ -173,6 +176,7 @@
                     android:textColorHint="@color/gray"
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
+                    android:maxLength="200"
                     android:textSize="16sp"
                     android:inputType="text">
                 </EditText>

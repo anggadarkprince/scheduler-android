@@ -1,263 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="@color/background">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
-    <RelativeLayout
-        android:id="@+id/rowPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/rowPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dip"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/description_general"
+                android:src="@drawable/cover"/>
+
+            <ImageView
+                android:id="@+id/dashboardAvatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="60dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/description_general"
+                android:src="@drawable/avatar" />
+
+            <TextView
+                android:id="@+id/dashboardName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/dummy_name"
+                android:textColor="@color/white"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/dashboardAvatar"/>
+
+            <TextView
+                android:id="@+id/dashboardAbout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/dummy_text_long"
+                android:textColor="@color/silver"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/dashboardName"
+                android:gravity="center_horizontal"
+                android:paddingRight="50dp"
+                android:paddingLeft="50dp"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dip"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/description_general"
-            android:src="@drawable/cover"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:baselineAligned="false">
 
-        <ImageView
-            android:id="@+id/dashboardAvatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="10dip"
-            android:layout_marginTop="40dp"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/description_general"
-            android:src="@drawable/avatar" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="1"
+                android:gravity="center">
 
-        <TextView
-            android:id="@+id/dashboardName"
+                <TextView
+                    android:id="@+id/labelSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/title_schedule"
+                    android:textColor="@color/silver"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/valueSchedule"
+                    android:layout_below="@id/labelSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_number_initial"
+                    android:textColor="@color/white"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="50dip"
+                android:background="@color/silver"
+                android:contentDescription="@string/description_general" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/labelIncoming"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/title_incoming"
+                    android:textColor="@color/silver"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/valueIncoming"
+                    android:layout_below="@id/labelIncoming"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_number_initial"
+                    android:textColor="@color/white"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="50dip"
+                android:background="@color/silver"
+                android:contentDescription="@string/description_general" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/labelNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/title_note"
+                    android:textColor="@color/silver"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/valueNote"
+                    android:layout_below="@id/labelNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_number_initial"
+                    android:textColor="@color/white"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonCreate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/dummy_name"
-            android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/dashboardAvatar"/>
-
-        <TextView
-            android:id="@+id/dashboardAbout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/dummy_text_long"
-            android:textColor="@color/silver"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/dashboardName"
-            android:gravity="center_horizontal"
-            android:paddingRight="50dp"
-            android:paddingLeft="50dp"/>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:baselineAligned="false">
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/labelSchedule"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/title_schedule"
-                android:textColor="@color/silver"
-                android:textStyle="bold"
-                android:gravity="center"/>
-
-            <TextView
-                android:id="@+id/valueSchedule"
-                android:layout_below="@id/labelSchedule"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:text="@string/dummy_number_medium"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-
-        </RelativeLayout>
-
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="50dip"
-            android:background="@color/silver"
-            android:contentDescription="@string/description_general" />
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/labelIncoming"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/title_incoming"
-                android:textColor="@color/silver"
-                android:textStyle="bold"
-                android:gravity="center"/>
-
-            <TextView
-                android:id="@+id/valueIncoming"
-                android:layout_below="@id/labelIncoming"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:text="@string/dummy_number_medium"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-
-        </RelativeLayout>
-
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="50dip"
-            android:background="@color/silver"
-            android:contentDescription="@string/description_general" />
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/labelNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/title_note"
-                android:textColor="@color/silver"
-                android:textStyle="bold"
-                android:gravity="center"/>
-
-            <TextView
-                android:id="@+id/valueNote"
-                android:layout_below="@id/labelNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:text="@string/dummy_number_medium"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-
-        </RelativeLayout>
-
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="80dp"
+            android:paddingRight="80dp"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/button"
+            android:layout_gravity="center_horizontal"
+            android:topLeftRadius="10dp"
+            android:topRightRadius="10dp"
+            android:text="@string/label_button_create_schedule"
+            android:textStyle="bold"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/white" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonCreate"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="80dp"
-        android:paddingRight="80dp"
-        android:layout_marginTop="15dip"
-        android:background="@drawable/button"
-        android:layout_gravity="center_horizontal"
-        android:topLeftRadius="10dp"
-        android:topRightRadius="10dp"
-        android:text="@string/label_button_create_schedule"
-        android:textStyle="bold"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/white" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="140dp"
+        android:layout_marginBottom="30dip"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/description_copyright"
+        android:src="@drawable/copyright" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@color/cover">
-
-        <LinearLayout
-            android:id="@+id/buttonTap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/buttonIncoming"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:background="@drawable/transparent"
-                android:text="@string/label_button_incoming"
-                android:textColor="@color/white"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-            <Button
-                android:id="@+id/buttonToday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:background="@drawable/transparent"
-                android:text="@string/label_button_today"
-                android:textColor="@color/white"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-            <Button
-                android:id="@+id/buttonTomorrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:background="@drawable/transparent"
-                android:text="@string/label_button_tomorrow"
-                android:textColor="@color/white"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/buttonBorder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/buttonTap">
-            <ImageView
-                android:id="@+id/stripButtonIncoming"
-                android:layout_width="wrap_content"
-                android:layout_height="3dp"
-                android:background="@color/blue_light"
-                android:contentDescription="@string/description_general"
-                android:layout_weight="1"/>
-            <ImageView
-                android:id="@+id/stripButtonToday"
-                android:layout_width="wrap_content"
-                android:layout_height="3dp"
-                android:background="@color/white"
-                android:contentDescription="@string/description_general"
-                android:layout_weight="1"/>
-            <ImageView
-                android:id="@+id/stripButtonTomorrow"
-                android:layout_width="wrap_content"
-                android:layout_height="3dp"
-                android:background="@color/white"
-                android:contentDescription="@string/description_general"
-                android:layout_weight="1"/>
-        </LinearLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/dashboardPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/buttonBorder"/>
-
-    </RelativeLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

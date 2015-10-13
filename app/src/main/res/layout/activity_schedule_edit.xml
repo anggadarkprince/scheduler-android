@@ -31,7 +31,7 @@
                     android:textSize="30sp"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="10dp"/>
 
                 <TextView
                     android:id="@+id/labelSubtitle"
@@ -69,6 +69,7 @@
                     android:textColorHint="@color/gray"
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
+                    android:maxLength="200"
                     android:textSize="16sp"
                     android:inputType="text">
 
@@ -106,6 +107,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="10"
                     android:inputType="date">
                 </EditText>
 
@@ -140,6 +142,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="8"
                     android:inputType="time">
                 </EditText>
 
@@ -174,6 +177,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textSize="16sp"
+                    android:maxLength="200"
                     android:inputType="text">
                 </EditText>
 

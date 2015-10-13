@@ -15,7 +15,7 @@
             android:id="@+id/labelTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_schedule"
+            android:text="@string/title_incoming"
             android:textColor="@color/white"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -29,22 +29,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/subtitle_schedule"
             android:textColor="@color/gray" />
-
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_toLeftOf="@id/labelTitle"
-            android:background="@drawable/button"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/label_button_create_schedule"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white"
-            android:minHeight="40dp"/>
 
         <TextView
             android:id="@+id/emptyMessage"

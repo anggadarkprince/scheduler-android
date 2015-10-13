@@ -58,6 +58,8 @@ public class ScreenDashboard extends Fragment {
 
     private JSONObject dashboardData;
 
+    private TextView labelName;
+    private TextView labelAbout;
     private TextView labelSchedule;
     private TextView labelIncoming;
     private TextView labelNote;
@@ -89,13 +91,11 @@ public class ScreenDashboard extends Fragment {
         connectionDetector = new ConnectionDetector(getActivity());
         session = new SessionManager(getActivity());
 
+        labelName = (TextView) getActivity().findViewById(R.id.dashboardName);
+        labelAbout = (TextView) getActivity().findViewById(R.id.dashboardAbout);
         labelSchedule = (TextView) getActivity().findViewById(R.id.valueSchedule);
         labelIncoming = (TextView) getActivity().findViewById(R.id.valueIncoming);
         labelNote = (TextView) getActivity().findViewById(R.id.valueNote);
-
-        buttonIncoming = (Button) getActivity().findViewById(R.id.buttonIncoming);
-        buttonToday = (Button) getActivity().findViewById(R.id.buttonToday);
-        buttonTomorrow = (Button) getActivity().findViewById(R.id.buttonTomorrow);
 
         buttonCreateSchedule = (Button) getActivity().findViewById(R.id.buttonCreate);
         buttonCreateSchedule.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +105,10 @@ public class ScreenDashboard extends Fragment {
                 startActivityForResult(newSchedule, 200);
             }
         });
+
+        labelName.setText(session.getUserDetails().get(SessionManager.KEY_NAME));
+        labelAbout.setText(session.getUserDetails().get(SessionManager.KEY_ABOUT));
+
         updateDashboard();
     }
 
@@ -214,52 +218,6 @@ public class ScreenDashboard extends Fragment {
                     labelIncoming.setText(dashboardData.getString(DATA_TOTAL_INCOMING));
                     labelNote.setText(dashboardData.getString(DATA_TOTAL_NOTE));
 
-                    String incoming = dashboardData.getString(DATA_INCOMING);
-                    String today = dashboardData.getString(DATA_TODAY);
-                    String tomorrow = dashboardData.getString(DATA_TOMORROW);
-
-                    pagerAdapter = new DashboardPagerAdapter(getActivity().getSupportFragmentManager());
-                    pagerAdapter.updateSchedule(incoming, today, tomorrow);
-
-                    viewPager = (ViewPager) getActivity().findViewById(R.id.dashboardPager);
-                    viewPager.setAdapter(pagerAdapter);
-                    viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                        @Override
-                        public void onPageSelected(int position) {
-                            changePage(position);
-                        }
-
-                        @Override
-                        public void onPageScrolled(int arg0, float arg1, int arg2) {
-                        }
-
-                        @Override
-                        public void onPageScrollStateChanged(int position) {
-                        }
-                    });
-
-                    buttonIncoming.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            viewPager.setCurrentItem(0);
-                        }
-                    });
-
-                    buttonToday.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            viewPager.setCurrentItem(1);
-                        }
-                    });
-
-                    buttonTomorrow.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            viewPager.setCurrentItem(2);
-                        }
-                    });
-
-
                 } else {
                     alert.showAlertDialog(getActivity(), getString(R.string.error_title), getString(R.string.error_message));
                 }
@@ -269,36 +227,4 @@ public class ScreenDashboard extends Fragment {
         }
     }
 
-    /**
-     * Change page pager tab
-     *
-     * @param position of index page
-     */
-    private void changePage(int position) {
-        ImageView view;
-
-        view = (ImageView) getActivity().findViewById(R.id.stripButtonIncoming);
-        view.setBackgroundColor(getResources().getColor(R.color.white));
-
-        view = (ImageView) getActivity().findViewById(R.id.stripButtonToday);
-        view.setBackgroundColor(getResources().getColor(R.color.white));
-
-        view = (ImageView) getActivity().findViewById(R.id.stripButtonTomorrow);
-        view.setBackgroundColor(getResources().getColor(R.color.white));
-
-        switch (position) {
-            case 0:
-                view = (ImageView) getActivity().findViewById(R.id.stripButtonIncoming);
-                view.setBackgroundColor(getResources().getColor(R.color.blue_light));
-                break;
-            case 1:
-                view = (ImageView) getActivity().findViewById(R.id.stripButtonToday);
-                view.setBackgroundColor(getResources().getColor(R.color.blue_light));
-                break;
-            case 2:
-                view = (ImageView) getActivity().findViewById(R.id.stripButtonTomorrow);
-                view.setBackgroundColor(getResources().getColor(R.color.blue_light));
-                break;
-        }
-    }
 }

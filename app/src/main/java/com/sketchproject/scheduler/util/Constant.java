@@ -12,7 +12,7 @@ public class Constant {
     public static final String STATUS_RESTRICT 		    = "restrict";
     public static final String STATUS_MISMATCH 		    = "mismatch";
 
-    public static final String SERVER 				    = "http://10.0.3.2/scheduler/";
+    public static final String SERVER 				    = "http://10.0.3.2/scheduler_api/";
     public static final String URL_LOGIN 			    = SERVER+"user/login";
     public static final String URL_LOGOUT 			    = SERVER+"user/logout";
     public static final String URL_REGISTER 		    = SERVER+"user/register";
@@ -27,6 +27,9 @@ public class Constant {
     public static final String URL_NOTE_DELETE 		    = SERVER+"note/delete";
 
     public static final String URL_SCHEDULE_VIEW 		= SERVER+"schedule";
+    public static final String URL_SCHEDULE_INCOMING	= SERVER+"schedule/incoming";
+    public static final String URL_SCHEDULE_TODAY       = SERVER+"schedule/today";
+    public static final String URL_SCHEDULE_TOMORROW	= SERVER+"schedule/tomorrow";
     public static final String URL_SCHEDULE_INSERT 		= SERVER+"schedule/insert";
     public static final String URL_SCHEDULE_EDIT 		= SERVER+"schedule/edit";
     public static final String URL_SCHEDULE_UPDATE 		= SERVER+"schedule/update";
