@@ -61,7 +61,7 @@ public class NoteListAdapter extends BaseAdapter {
         if (noteItems.get(position).getNote().length() < 200) {
             txtNote.setText(noteItems.get(position).getNote() + "...");
         } else {
-            txtNote.setText(noteItems.get(position).getNote().substring(0, 200).toCharArray().toString() + "...");
+            txtNote.setText(noteItems.get(position).getNote().substring(0, 200) + "...");
         }
 
         return convertView;

@@ -19,7 +19,7 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="5dp"/>
 
         <TextView
             android:id="@+id/labelSubtitle"
@@ -42,9 +42,9 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/label_button_create_schedule"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/white"
-            android:minHeight="40dp"/>
+            android:minHeight="35dp"/>
 
         <TextView
             android:id="@+id/emptyMessage"

@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -188,7 +189,7 @@ public class LoginActivity extends Activity {
                 connection.connect();
 
                 int responseCode = connection.getResponseCode();
-Log.e(TAG, String.valueOf(responseCode));
+
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = connection.getInputStream();
                     Reader reader = new InputStreamReader(inputStream);

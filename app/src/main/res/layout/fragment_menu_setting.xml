@@ -26,7 +26,7 @@
                     android:id="@+id/labelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="5dp"
                     android:text="@string/title_setting"
                     android:textColor="@color/white"
                     android:textSize="30sp"
@@ -264,7 +264,7 @@
                 android:background="#DD000000"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible" >
+                android:visibility="gone" >
 
                 <ImageView
                     android:id="@+id/loadingIcon"

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_selector"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
     android:adjustViewBounds="true">
 
     <TextView
