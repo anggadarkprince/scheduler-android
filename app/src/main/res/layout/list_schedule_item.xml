@@ -29,6 +29,22 @@
         android:textColor="@color/white"
         android:textSize="15sp" />
 
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/leftMonth"
+        android:text="NEW"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/blue_light"
+        android:layout_marginTop="5dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:textSize="12sp" />
+
     <ImageView
         android:id="@+id/timelineTop"
         android:adjustViewBounds="true"
@@ -36,7 +52,7 @@
         android:layout_height="20dp"
         android:contentDescription="@string/description_general"
         android:background="@color/white"
-        android:layout_marginLeft="60dp"/>
+        android:layout_marginLeft="65dp"/>
 
     <ImageView
         android:id="@+id/timeline"
@@ -46,7 +62,7 @@
         android:layout_marginTop="30dp"
         android:contentDescription="@string/description_general"
         android:background="@color/white"
-        android:layout_marginLeft="60dp"/>
+        android:layout_marginLeft="65dp"/>
 
     <ImageView
         android:id="@+id/listScheduleIcon"
@@ -55,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"
         android:paddingTop="10dp"
-        android:layout_marginLeft="45dp"
+        android:layout_marginLeft="50dp"
         android:contentDescription="@string/description_general"
         android:src="@drawable/ic_node" />
 

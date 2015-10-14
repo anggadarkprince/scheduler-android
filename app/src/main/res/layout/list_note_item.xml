@@ -39,6 +39,7 @@
         android:layout_marginRight="5dp"
         android:paddingBottom="10dp"
         android:text="@string/dummy_date_sort"
+        android:textStyle="bold"
         android:textColor="@color/gray"
         android:textSize="12sp"/>
 

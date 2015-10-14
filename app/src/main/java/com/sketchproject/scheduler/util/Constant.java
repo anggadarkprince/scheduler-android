@@ -12,7 +12,7 @@ public class Constant {
     public static final String STATUS_RESTRICT 		    = "restrict";
     public static final String STATUS_MISMATCH 		    = "mismatch";
 
-    public static final String SERVER 				    = "http://10.0.3.2/scheduler_api/";
+    public static final String SERVER 				    = "http://scheduler.angga-ari.com/"; //"http://10.0.3.2/scheduler_api/";
     public static final String URL_LOGIN 			    = SERVER+"user/login";
     public static final String URL_LOGOUT 			    = SERVER+"user/logout";
     public static final String URL_REGISTER 		    = SERVER+"user/register";

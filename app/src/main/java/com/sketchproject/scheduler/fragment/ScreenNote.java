@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +60,7 @@ public class ScreenNote extends Fragment {
     private final String KEY_TITLE = "title";
     private final String KEY_LABEL = "label";
     private final String KEY_NOTE = "note";
+    private final String KEY_TIMESTAMP = "created_at";
 
     private final String DATA_STATUS = "status";
     private final String DATA_NOTE = "notes";
@@ -213,12 +215,13 @@ public class ScreenNote extends Fragment {
 
                 if(responseCode == HttpURLConnection.HTTP_OK){
                     InputStream inputStream = connection.getInputStream();
-                    Reader reader = new InputStreamReader(inputStream);
-                    int contentLength = connection.getContentLength();
-                    char[] charArray = new char[contentLength];
-                    reader.read(charArray);
-
-                    String responseData = new String(charArray);
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = rd.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    String responseData = sb.toString();
 
                     responseData = responseData.replace("\\r\\n", " ");
                     jsonResponse = new JSONObject(responseData);
@@ -269,7 +272,7 @@ public class ScreenNote extends Fragment {
 
                         int id = note.getInt(KEY_ID);
                         String title = note.getString(KEY_TITLE);
-                        String label = note.getString(KEY_LABEL);
+                        String label = note.getString(KEY_LABEL)+", Created At "+note.getString(KEY_TIMESTAMP).substring(0,16);
                         String content = note.getString(KEY_NOTE);
 
                         noteItems.add(new NoteItem(id, title, label, content));

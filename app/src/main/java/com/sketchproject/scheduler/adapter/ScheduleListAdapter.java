@@ -2,6 +2,7 @@ package com.sketchproject.scheduler.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,7 @@ public class ScheduleListAdapter extends BaseAdapter {
         TextView txtTime = (TextView) convertView.findViewById(R.id.listScheduleTime);
         TextView txtLeftDate = (TextView) convertView.findViewById(R.id.leftDate);
         TextView txtLeftMonth = (TextView) convertView.findViewById(R.id.leftMonth);
+        TextView txtLabel = (TextView) convertView.findViewById(R.id.label);
         ImageView timelineTop = (ImageView) convertView.findViewById(R.id.timelineTop);
         ImageView timelineBottom = (ImageView) convertView.findViewById(R.id.timeline);
 
@@ -143,12 +145,18 @@ public class ScheduleListAdapter extends BaseAdapter {
             currentDate = simpleDateFormat.parse(simpleDateFormat.format(currentDate));
 
             if(scheduleDate.after(currentDate)){
+                txtLabel.setText("NEW");
+                txtLabel.setBackgroundColor(parent.getResources().getColor(R.color.blue_light));
                 Log.e("DATE", scheduleItem.get(position).getDate()+" lebih dari hari ini");
             }
             if(scheduleDate.equals(currentDate)){
+                txtLabel.setText("CURRENT");
+                txtLabel.setBackgroundColor(parent.getResources().getColor(R.color.orange_light));
                 Log.e("DATE", scheduleItem.get(position).getDate()+" hari ini");
             }
             if (scheduleDate.before(currentDate)){
+                txtLabel.setText("PASSED");
+                txtLabel.setBackgroundColor(parent.getResources().getColor(R.color.red_light));
                 Log.e("DATE", scheduleItem.get(position).getDate()+" sebelum dari hari ini");
             }
         } catch (ParseException e) {

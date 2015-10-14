@@ -22,6 +22,7 @@ import com.sketchproject.scheduler.util.Constant;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -208,12 +209,13 @@ public class NoteCreateActivity extends Activity{
 
                 if(responseCode == HttpURLConnection.HTTP_OK){
                     InputStream inputStream = connection.getInputStream();
-                    Reader reader = new InputStreamReader(inputStream);
-                    int contentLength = connection.getContentLength();
-                    char[] charArray = new char[contentLength];
-                    reader.read(charArray);
-
-                    String responseData = new String(charArray);
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = rd.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    String responseData = sb.toString();
                     Log.e(TAG, responseData);
                     jsonResponse = new JSONObject(responseData);
                 }

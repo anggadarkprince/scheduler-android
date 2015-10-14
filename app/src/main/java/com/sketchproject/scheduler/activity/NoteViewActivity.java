@@ -26,6 +26,7 @@ import com.sketchproject.scheduler.util.Constant;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,12 +169,13 @@ public class NoteViewActivity extends Activity {
 
                 if(responseCode == HttpURLConnection.HTTP_OK){
                     InputStream inputStream = connection.getInputStream();
-                    Reader reader = new InputStreamReader(inputStream);
-                    int contentLength = connection.getContentLength();
-                    char[] charArray = new char[contentLength];
-                    reader.read(charArray);
-
-                    String responseData = new String(charArray);
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = rd.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    String responseData = sb.toString();
                     jsonResponse = new JSONObject(responseData);
                 }
                 else{
@@ -343,12 +345,13 @@ public class NoteViewActivity extends Activity {
 
                 if(responseCode == HttpURLConnection.HTTP_OK){
                     InputStream inputStream = connection.getInputStream();
-                    Reader reader = new InputStreamReader(inputStream);
-                    int contentLength = connection.getContentLength();
-                    char[] charArray = new char[contentLength];
-                    reader.read(charArray);
-
-                    String responseData = new String(charArray);
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = rd.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    String responseData = sb.toString();
                     jsonResponse = new JSONObject(responseData);
                 }
                 else{
