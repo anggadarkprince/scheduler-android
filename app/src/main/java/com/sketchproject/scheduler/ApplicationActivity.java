@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sketchproject.scheduler.fragment.ScreenCalendar;
 import com.sketchproject.scheduler.fragment.ScreenDashboard;
@@ -29,6 +30,8 @@ import com.sketchproject.scheduler.library.SessionManager;
 public class ApplicationActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private SessionManager session;
+
+    private long lastPress;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -203,6 +206,17 @@ public class ApplicationActivity extends AppCompatActivity implements Navigation
             super.onAttach(activity);
             ((ApplicationActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - lastPress > 5000){
+            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_LONG).show();
+            lastPress = currentTime;
+        }else{
+            super.onBackPressed();
         }
     }
 }
